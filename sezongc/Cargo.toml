@@ -1,0 +1,12 @@
+[package]
+name = "sezongc"
+version = "0.1.0"
+authors = ["RanolP <public.ranolp@gmail.com>"]
+edition = "2018"
+license = "MIT"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+libsezongc = { path = "../libsezongc" }
+backtrace = "0.3.43"
