@@ -1,8 +1,6 @@
-use crate::core::{CodeCharacter, CodeCharacterKind};
 use std::cell::RefCell;
 use std::fmt::Display;
 use std::path::PathBuf;
-use std::str::Chars;
 
 thread_local! {
     static ID: RefCell<u64> = RefCell::new(0);
@@ -23,8 +21,8 @@ pub struct SourceFile {
     /// The id of source file
     pub id: SourceFileId,
     path: SourceFilePath,
-    src: String,
-    pub(crate) line_begins: Vec<usize>,
+    // TODO: temporarily open, should be wrapped with compiler api
+    pub src: String,
 }
 
 impl SourceFile {
@@ -32,32 +30,11 @@ impl SourceFile {
         SourceFile {
             path,
             src: src.clone(),
-            line_begins: [
-                // virtual line 0
-                vec![0],
-                // actual lines
-                src.chars()
-                    .enumerate()
-                    .filter(|(_, character)| {
-                        CodeCharacter::new(*character).kind == CodeCharacterKind::VerticalSpace
-                    })
-                    .map(|(offset, _)| offset + 1)
-                    .collect(),
-                // virtual line 1 + last
-                vec![src.chars().count() + 1],
-            ]
-            .concat(),
             id: ID.with(|id| {
                 *id.borrow_mut() += 1;
                 *id.borrow()
             }),
         }
-    }
-}
-
-impl SourceFile {
-    pub(crate) fn chars(&self) -> Chars<'_> {
-        self.src.chars()
     }
 }
 
@@ -89,6 +66,10 @@ impl SourceFile {
         } else {
             false
         }
+    }
+
+    pub fn parse(&self) -> Vec<crate::api::Spanned<crate::api::Ast>> {
+        crate::parse::sezong(nom_locate::LocatedSpan::new(&self.src))
     }
 }
 

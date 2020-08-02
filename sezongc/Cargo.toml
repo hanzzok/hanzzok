@@ -9,4 +9,3 @@ license = "MIT"
 
 [dependencies]
 libsezongc = { path = "../libsezongc" }
-backtrace = "0.3.43"

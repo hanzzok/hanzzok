@@ -5,18 +5,15 @@
 //! Doing the following tasks, by the order, to compile your documents.
 //!
 //! - [Preprocess]
-//! - [Tokenize]
 //! - [Parse]
 //! - [Postprocess]
 //!
 //! ## Preprocess
 //!
-//! Before [Tokenize], modify the original text of the document to make
+//! Before [Parse], modify the original text of the document to make
 //! the users comfortable.
 //!
 //! See [`Preprocessor`] trait for more informations.
-//!
-//! ## Tokenize
 //!
 //! ## Parse
 //!
@@ -29,7 +26,8 @@
 //! [Parse]: #parse
 //! [Postprocess]: #postprocess
 //! [`Preprocessor`]: /libsezongc/api/trait.Preprocessor.html
-#![deny(missing_docs, unsafe_code)]
+// TODO: temporarily warn, should be deny
+#![warn(missing_docs, unsafe_code)]
 #![warn(
     unreachable_pub,
     anonymous_parameters,
@@ -38,12 +36,9 @@
     unused_import_braces,
     unused_qualifications
 )]
+#![warn(clippy::all)]
 
 pub mod api;
-mod core;
 mod parse;
-mod tokenize;
 
 pub use api::Compiler;
-pub use parse::{ParseError, ParseResult, Parser};
-pub use tokenize::Tokenizer;

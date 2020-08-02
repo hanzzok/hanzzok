@@ -1,14 +1,19 @@
-use super::util::*;
-use crate::api::{InlineObject, PlainText, Spanned, TokenKind};
-use crate::parse::{ParseResult, Parser};
+use crate::api::{InlineObject, LineColumn, ParserResult, ParserSpan, PlainText, Span, Spanned};
+use nom::{bytes::complete::tag, character::complete::anychar};
+use std::iter::once;
 
-pub(crate) fn escape(parser: &mut Parser<'_>) -> ParseResult<InlineObject> {
-    let span = {
-        let solidus = exact(TokenKind::PunctuationReverseSolidus)(parser)?;
-        match take(parser) {
-            Ok(token) => solidus.span().joined(&token.span()).expect("Same file"),
-            _ => solidus.span(),
-        }
-    };
-    Ok(InlineObject::PlainText(PlainText { span }))
+pub(crate) fn escape(s: ParserSpan<'_>) -> ParserResult<'_, InlineObject> {
+    let start = LineColumn::create_from(&s);
+    let (s, _) = tag("\\")(s)?;
+    let (s, text) = anychar::<_, ()>(s)
+        .map(|(s, c)| (s, once(c).collect()))
+        .unwrap_or((s, "\\".to_owned()));
+    let end = LineColumn::create_from(&s);
+    Ok((
+        s,
+        Spanned {
+            value: InlineObject::PlainText(PlainText { text }),
+            span: Span { start, end },
+        },
+    ))
 }

@@ -1,3 +1,4 @@
+use crate::api::ParserSpan;
 use std::cmp::Ordering;
 use std::fmt::Display;
 
@@ -9,14 +10,6 @@ pub struct LineColumn {
     pub line: usize,
     /// The column
     pub column: usize,
-}
-
-impl LineColumn {
-    pub(crate) const ZERO: LineColumn = LineColumn {
-        offset: 0,
-        line: 1,
-        column: 0,
-    };
 }
 
 impl Display for LineColumn {
@@ -34,5 +27,15 @@ impl PartialEq for LineColumn {
 impl PartialOrd for LineColumn {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         self.offset.partial_cmp(&other.offset)
+    }
+}
+
+impl LineColumn {
+    pub(crate) fn create_from(parser_span: &ParserSpan<'_>) -> LineColumn {
+        LineColumn {
+            offset: parser_span.location_offset(),
+            line: parser_span.location_line() as usize,
+            column: parser_span.get_utf8_column(),
+        }
     }
 }

@@ -1,74 +1,100 @@
-use super::{text, util::*};
-use crate::api::{Ast, BlockConstructor, InlineObject, Span, Spanned, Token, TokenKind};
-use crate::parse::{Ignorable, ParseResult, Parser};
+use super::{
+    base::{ident, multispace, tag},
+    text,
+};
+use crate::api::parse_prelude::*;
+use nom::{
+    branch::alt,
+    bytes::complete::{take_until, take_while},
+};
+use std::sync::{Arc, Mutex};
 
-pub(crate) fn block_constructor(parser: &mut Parser<'_>) -> ParseResult<Ast> {
-    if parser
-        .last_used()
-        .filter(|token| token.kind == TokenKind::LineWrap)
-        .is_none()
-    {
-        return unmatched(parser);
-    }
-    let start = exact(TokenKind::PunctuationVerticalLine)(parser)?;
-    skip_whitespace(parser);
-    let name = exact_require(TokenKind::Text)(parser)?;
-    skip_whitespace_with_line_wrap(parser);
-    let (input, params, body) = block_constructor_body(parser)?;
+pub(crate) fn block_constructor(s: ParserSpan<'_>) -> ParserResult<'_, Ast> {
+    let (s, block_constructor) = Spanned::wrap(|s| {
+        let (s, _) = alt((tag("\r\n"), tag("\n"), tag("\r")))(s).or_else(|err| {
+            if s.location_offset() == 0 {
+                Ok((s, s))
+            } else {
+                Err(err)
+            }
+        })?;
+        let (s, _) = tag("|")(s)?;
+        let s = multispace(s);
+        let (s, name) = ident(s)?;
+        let (s, (input, params, body)) =
+            block_constructor_body(s).unwrap_or_else(|_| (s, (None, None, None)));
 
-    Ok(Ast::BlockConstructor(BlockConstructor {
-        name: name.clone(),
-        span: Span::from_sequence(
-            vec![
-                Some(start.span()),
-                input.map(|object| object.span()),
+        Ok((
+            s,
+            BlockConstructor {
+                name,
+                input,
                 params,
                 body,
-            ]
-            .into_iter()
-            .filter_map(|option| option),
-        )
-        .expect("Same file, more than zero elements"),
-    }))
+            },
+        ))
+    })(s)?;
+
+    Ok((
+        s,
+        block_constructor.map_wrapped(|block_constructor| Ast::BlockConstructor(block_constructor)),
+    ))
 }
 
 fn block_constructor_body(
-    parser: &mut Parser<'_>,
-) -> ParseResult<(Option<InlineObject>, Option<Span>, Option<Span>)> {
-    skip_whitespace(parser);
-    let text = text(parser).ignored()?;
-    skip_whitespace_with_line_wrap(parser);
-    let params = if exact(TokenKind::PunctuationLeftParenthesis)(parser).is_ok() {
-        let mut opened = 1;
-        Span::from_sequence(
-            take_while(exact(move |token: &Token| match token.kind {
-                TokenKind::PunctuationLeftParenthesis => {
-                    opened += 1;
-                    true
-                }
-                TokenKind::PunctuationRightParenthesis => {
-                    opened -= 1;
-                    opened != 0
-                }
-                _ => true,
-            }))(parser)?
-            .into_iter(),
-        )
-    } else {
-        None
-    };
-    skip_whitespace_with_line_wrap(parser);
-    let body = if let Ok(token) = exact(TokenKind::PunctuationLeftCurlyBracket)(parser) {
-        let open_length = token.len();
-        Span::from_sequence(
-            take_while(exact(move |token: &Token| {
-                token.kind == TokenKind::PunctuationRightCurlyBracket && token.len() == open_length
-            }))(parser)?
-            .into_iter(),
-        )
-    } else {
-        None
-    };
+    s: ParserSpan<'_>,
+) -> ParserResultBase<
+    '_,
+    (
+        Option<Spanned<InlineObject>>,
+        Option<String>,
+        Option<String>,
+    ),
+> {
+    let s = multispace(s);
+    let (s, text) = text(s)
+        .ok()
+        .map(|(s, text)| (s, Some(text)))
+        .unwrap_or_else(|| (s, None));
 
-    Ok((text, params, body))
+    let s = multispace(s);
+
+    let (s, params) = match tag("(")(s) {
+        Ok((s, _)) => {
+            // TODO: waiting for nom 6 and the nom_locate compatible with nom 6
+            let opened = Arc::new(Mutex::new(1));
+            let (s, params) = take_while(|c| {
+                let mut opened = opened.lock().unwrap();
+                match c {
+                    '(' => {
+                        *opened += 1;
+                        true
+                    }
+                    ')' => {
+                        *opened -= 1;
+                        *opened != 0
+                    }
+                    _ => true,
+                }
+            })(s)?;
+            let (s, _) = tag(")")(s)?;
+            (s, Some(params.clone().to_owned()))
+        }
+        _ => (s, None),
+    };
+    let params = params.map(|params| params.fragment().clone().to_owned());
+
+    let s = multispace(s);
+
+    let (s, body) = match tag("{")(s) {
+        Ok((s, token)) => {
+            let open_length = token.fragment().len();
+            let (s, body) = take_until("}".repeat(open_length).as_ref())(s)?;
+            (s, Some(body.clone().to_owned()))
+        }
+        _ => (s, None),
+    };
+    let body = body.map(|body| body.fragment().clone().to_owned());
+
+    Ok((s, (text, params, body)))
 }

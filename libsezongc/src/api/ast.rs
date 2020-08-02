@@ -1,21 +1,12 @@
-use crate::api::{Span, Spanned, Token};
+use crate::api::Spanned;
 
 /// Abstract Syntax Tree of Sezong document
 #[derive(Debug)]
 pub enum Ast {
     /// The `BlockConstructor` node
-    BlockConstructor(BlockConstructor),
+    BlockConstructor(Spanned<BlockConstructor>),
     /// The `InlineObject` node
-    InlineObject(InlineObject),
-}
-
-impl Spanned for Ast {
-    fn span(&self) -> Span {
-        match self {
-            Ast::BlockConstructor(BlockConstructor { span, .. }) => span.clone(),
-            Ast::InlineObject(object) => object.span(),
-        }
-    }
+    InlineObject(Spanned<InlineObject>),
 }
 
 /// The `InlineObject` node
@@ -29,18 +20,7 @@ pub enum InlineObject {
     PlainText(PlainText),
 }
 
-impl Spanned for InlineObject {
-    fn span(&self) -> Span {
-        match self {
-            InlineObject::InlineConstructor(InlineConstructor { span, .. }) => span,
-            InlineObject::Decorator(Decorator { span, .. }) => span,
-            InlineObject::PlainText(PlainText { span, .. }) => span,
-        }
-        .clone()
-    }
-}
-
-impl Into<Ast> for InlineObject {
+impl Into<Ast> for Spanned<InlineObject> {
     fn into(self) -> Ast {
         Ast::InlineObject(self)
     }
@@ -49,35 +29,32 @@ impl Into<Ast> for InlineObject {
 /// The block constructor node
 #[derive(Debug)]
 pub struct BlockConstructor {
-    pub(crate) name: Token,
-    pub(crate) span: Span,
+    pub(crate) name: Spanned<String>,
+    pub(crate) input: Option<Spanned<InlineObject>>,
+    pub(crate) params: Option<String>,
+    pub(crate) body: Option<String>,
 }
 
 /// The inline constructor node
 #[derive(Debug)]
-pub struct InlineConstructor {
-    pub(crate) constructor_function: Box<DecoratorFunction>,
-    pub(crate) span: Span,
-}
+pub struct InlineConstructor(pub(crate) Box<DecoratorFunction>);
 
 /// The decorator node
 #[derive(Debug)]
 pub struct Decorator {
-    pub(crate) text: Box<InlineObject>,
-    pub(crate) functions: Vec<DecoratorFunction>,
-    pub(crate) span: Span,
+    pub(crate) text: Box<Spanned<InlineObject>>,
+    pub(crate) functions: Vec<Spanned<DecoratorFunction>>,
 }
 
 /// The decorator function node
 #[derive(Debug)]
 pub struct DecoratorFunction {
-    pub(crate) name: Token,
-    pub(crate) params: Option<Span>,
-    pub(crate) span: Span,
+    pub(crate) name: String,
+    pub(crate) params: Option<String>,
 }
 
 /// The plain text node
 #[derive(Debug)]
 pub struct PlainText {
-    pub(crate) span: Span,
+    pub(crate) text: String,
 }

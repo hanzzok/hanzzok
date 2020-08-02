@@ -1,17 +1,9 @@
-use super::{block_constructor, inline_object, util::*};
-use crate::api::{Ast, Span};
-use crate::parse::{ParseError, ParseResult, Parser};
+use super::{block_constructor, inline_object};
+use crate::api::parse_prelude::*;
+use nom::{branch::alt, multi::many0};
 
-pub(crate) fn sezong(parser: &mut Parser<'_>) -> ParseResult<Vec<Ast>> {
-    let result = take_while(any((block_constructor, into(inline_object))))(parser)?;
-
-    if parser.has_next() {
-        ParseError::Unused(
-            Span::from_sequence(parser.tokens[parser.cursor..].to_vec().into_iter())
-                .expect("Not empty, same file"),
-        )
-        .into()
-    } else {
-        Ok(result)
-    }
+pub(crate) fn sezong(s: ParserSpan<'_>) -> Vec<Spanned<Ast>> {
+    many0(alt((block_constructor, inline_object)))(s)
+        .map(|(_, v)| v)
+        .unwrap_or_else(|_| Vec::new())
 }

@@ -15,4 +15,4 @@
 ## That's decorators
 
 [You .italic] can write [any .bold] decorators.
-and also it can be [chained .italic .bold .underline] text text
+and also it can be [chained .italic .bold .underline].

@@ -1,84 +1,75 @@
-use super::{fallback_text, text, util::*};
-use crate::api::{
-    Ast, Decorator, DecoratorFunction, InlineObject, PlainText, Span, Spanned, Token, TokenKind,
+use super::{base::ident, text};
+use crate::api::parse_prelude::*;
+use nom::{
+    bytes::complete::{tag, take_while},
+    character::complete::multispace0,
+    multi::many0,
 };
-use crate::parse::{ParseResult, Parser};
+use std::sync::{Arc, Mutex};
 
-pub(crate) fn decorator(parser: &mut Parser<'_>) -> ParseResult<InlineObject> {
-    let start = exact(TokenKind::PunctuationLeftSquareBracket)(parser)?;
-    let text = take_while(any((text, |parser: &mut Parser<'_>| {
-        match parser.tokens[parser.cursor].kind {
-            TokenKind::PunctuationFullStop | TokenKind::PunctuationRightSquareBracket => {
-                unmatched(parser)
-            }
-            _ => fallback_text(parser),
-        }
-    })))(parser)?;
+pub(crate) fn decorator(s: ParserSpan<'_>) -> ParserResult<'_, InlineObject> {
+    Spanned::wrap(|s| {
+        let (s, _) = tag("[")(s)?;
+        let (s, text) = text(s)?;
+        let text = text.map(|text| match text {
+            InlineObject::PlainText(plain_text_node) => InlineObject::PlainText(PlainText {
+                text: plain_text_node.text.trim().to_owned(),
+            }),
+            _ => text,
+        });
 
-    if text.is_empty() {
-        return Ok(InlineObject::PlainText(PlainText { span: start.span() }));
-    }
+        let (s, functions) = many0(|s| {
+            let (s, _) = multispace0(s)?;
+            let (s, _) = tag(".")(s)?;
+            let (s, _) = multispace0(s)?;
+            let (s, function) = decorator_function(s)?;
 
-    let text = InlineObject::PlainText(PlainText {
-        span: Span::from_sequence(text.into_iter()).expect("Same file, not empty"),
-    });
+            Ok((s, function))
+        })(s)?;
 
-    let functions = take_while(|parser| {
-        skip_whitespace_with_line_wrap(parser);
-        let dot = exact(TokenKind::PunctuationFullStop)(parser)?;
-        skip_whitespace_with_line_wrap(parser);
-        let function = decorator_function(parser)?;
+        let (s, _) = multispace0(s)?;
 
-        Ok(DecoratorFunction {
-            span: dot.span().joined(&function.span).expect("Same file"),
-            ..function
-        })
-    })(parser)?;
+        let (s, _) = tag("]")(s)?;
 
-    skip_whitespace_with_line_wrap(parser);
-
-    let end = exact_require(TokenKind::PunctuationRightSquareBracket)(parser)?;
-
-    Ok(InlineObject::Decorator(Decorator {
-        text: Box::new(text),
-        functions,
-        span: start.span().joined(&end.span()).expect("Same file"),
-    }))
+        Ok((
+            s,
+            InlineObject::Decorator(Decorator {
+                text: Box::new(text),
+                functions,
+            }),
+        ))
+    })(s)
 }
 
-pub(crate) fn decorator_function(parser: &mut Parser<'_>) -> ParseResult<DecoratorFunction> {
-    let name = exact_require(TokenKind::Text)(parser)?;
+pub(crate) fn decorator_function(s: ParserSpan<'_>) -> ParserResult<'_, DecoratorFunction> {
+    Spanned::wrap(|s| {
+        let (s, name) = ident(s)?;
+        let name = name.value;
 
-    let mut opened = 1;
-    let params = if exact(TokenKind::PunctuationLeftParenthesis)(parser).is_ok() {
-        Span::from_sequence(
-            take_while(exact(move |token: &Token| match token.kind {
-                _ if opened == 0 => false,
-                TokenKind::PunctuationLeftParenthesis => {
-                    opened += 1;
-                    true
-                }
-                TokenKind::PunctuationRightParenthesis => {
-                    opened -= 1;
-                    true
-                }
-                _ => true,
-            }))(parser)?
-            .into_iter(),
-        )
-    } else {
-        None
-    };
+        // TODO: waiting for nom 6 and the nom_locate compatible with nom 6
+        let opened = Arc::new(Mutex::new(1));
+        let (s, params) = match tag::<_, _, ()>("(")(s) {
+            Ok((s, _)) => {
+                let (s, params) = take_while(move |c| {
+                    let mut opened = opened.lock().unwrap();
+                    match c {
+                        '(' => {
+                            *opened += 1;
+                            true
+                        }
+                        ')' => {
+                            *opened -= 1;
+                            *opened != 0
+                        }
+                        _ => true,
+                    }
+                })(s)?;
+                let (s, _) = tag(")")(s)?;
+                (s, Some(params.fragment().clone().to_owned()))
+            }
+            _ => (s, None),
+        };
 
-    let whole_span = if let Some(params) = &params {
-        name.span().joined(params).expect("Same file")
-    } else {
-        name.span()
-    };
-
-    Ok(DecoratorFunction {
-        name,
-        params,
-        span: whole_span,
-    })
+        Ok((s, DecoratorFunction { name, params }))
+    })(s)
 }

@@ -1,42 +1,40 @@
-use super::{decorator_function, util::*};
-use crate::api::{
-    Decorator, DecoratorFunction, InlineConstructor, InlineObject, Spanned, TokenKind,
-};
-use crate::parse::{ParseResult, Parser};
+use super::decorator_function;
+use crate::api::parse_prelude::*;
+use nom::{bytes::complete::tag, character::complete::multispace0, multi::many0};
 
-pub(crate) fn inline_constructor(parser: &mut Parser<'_>) -> ParseResult<InlineObject> {
-    let start = exact(TokenKind::PunctuationExclamationMark)(parser)?;
-    exact(TokenKind::PunctuationLeftSquareBracket)(parser)?;
-    let constructor_function = decorator_function(parser)?;
+pub(crate) fn inline_constructor(s: ParserSpan<'_>) -> ParserResult<'_, InlineObject> {
+    Spanned::wrap(|s| {
+        let (s, _) = tag("![")(s)?;
 
-    let functions = take_while(|parser| {
-        skip_whitespace_with_line_wrap(parser);
-        let dot = exact(TokenKind::PunctuationFullStop)(parser)?;
-        skip_whitespace_with_line_wrap(parser);
-        let function = decorator_function(parser)?;
+        let (s, constructor_function) = decorator_function(s)?;
 
-        Ok(DecoratorFunction {
-            span: dot.span().joined(&function.span).expect("Same file"),
-            ..function
-        })
-    })(parser)?;
+        let constructor = constructor_function.map(|constructor_function| {
+            InlineObject::InlineConstructor(InlineConstructor(Box::new(constructor_function)))
+        });
 
-    skip_whitespace_with_line_wrap(parser);
+        let (s, functions) = many0(|s| {
+            let (s, _) = multispace0(s)?;
+            let (s, _) = tag(".")(s)?;
+            let (s, _) = multispace0(s)?;
+            let (s, function) = decorator_function(s)?;
 
-    let end = exact_require(TokenKind::PunctuationRightSquareBracket)(parser)?;
+            Ok((s, function))
+        })(s)?;
 
-    let constructor = InlineObject::InlineConstructor(InlineConstructor {
-        constructor_function: Box::new(constructor_function),
-        span: start.span().joined(&end.span()).expect("Same file"),
-    });
+        let (s, _) = multispace0(s)?;
 
-    Ok(if functions.is_empty() {
-        constructor
-    } else {
-        InlineObject::Decorator(Decorator {
-            text: Box::new(constructor),
-            functions,
-            span: start.span().joined(&end.span()).expect("Same file"),
-        })
-    })
+        let (s, _) = tag("]")(s)?;
+
+        Ok((
+            s,
+            if functions.is_empty() {
+                constructor.value
+            } else {
+                InlineObject::Decorator(Decorator {
+                    text: Box::new(constructor),
+                    functions,
+                })
+            },
+        ))
+    })(s)
 }

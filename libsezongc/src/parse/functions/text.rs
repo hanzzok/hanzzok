@@ -1,26 +1,27 @@
-use super::util::*;
-use crate::api::{InlineObject, PlainText, Span, Spanned, Token, TokenKind};
-use crate::parse::{ParseResult, Parser};
+use super::base::is_text_char;
+use crate::api::parse_prelude::*;
+use nom::{bytes::complete::take_while1, character::complete::anychar};
 
-pub(crate) fn text(parser: &mut Parser<'_>) -> ParseResult<InlineObject> {
-    let tokens = take_while(any::<Token, _>((
-        exact(TokenKind::Text),
-        exact(TokenKind::Whitespace),
-    )))(parser)?;
-
-    if tokens.is_empty() {
-        return unmatched(parser);
-    }
-
-    Ok(InlineObject::PlainText(PlainText {
-        span: Span::from_sequence(tokens.into_iter()).expect("Same file"),
-    }))
+pub(crate) fn text(s: ParserSpan<'_>) -> ParserResult<'_, InlineObject> {
+    Spanned::wrap(|s| {
+        let (s, text) = take_while1(is_text_char)(s)?;
+        Ok((
+            s,
+            InlineObject::PlainText(PlainText {
+                text: text.fragment().clone().to_owned(),
+            }),
+        ))
+    })(s)
 }
 
-pub(crate) fn fallback_text(parser: &mut Parser<'_>) -> ParseResult<InlineObject> {
-    if let Ok(token) = take(parser) {
-        Ok(InlineObject::PlainText(PlainText { span: token.span() }))
-    } else {
-        unmatched(parser)
-    }
+pub(crate) fn fallback_text(s: ParserSpan<'_>) -> ParserResult<'_, InlineObject> {
+    Spanned::wrap(|s| {
+        let (s, v) = anychar(s)?;
+        Ok((
+            s,
+            InlineObject::PlainText(PlainText {
+                text: v.to_string(),
+            }),
+        ))
+    })(s)
 }
