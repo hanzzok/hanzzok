@@ -1,5 +1,2 @@
 [workspace]
-members = [
-    "libsezongc",
-    "sezongc"
-]
+members = ["hanzzok", "libhanzzok", "serde_hzdata"]

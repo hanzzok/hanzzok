@@ -1,0 +1,16 @@
+# Preprocessor
+
+Preprocessors are basically regex based string replacement rules.
+But for the better experiences, it can change how wide it should work on.
+
+## Wideness Levels
+
+- Main Text (0)
+- Config Text (1)
+
+## Example of Ruleset
+
+``` hzdata;nd=1
+{ version = 1, wideness_level = 0, pattern = /:([^:]+):/, replace = "[#emoji($1)]" }
+{ version = 1, wideness_level = 0, pattern = /\([cC]\)/, replace = "ⓒ" }
+```
