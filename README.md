@@ -17,11 +17,12 @@ Goals:
 
 Not a Goals:
 
-- Complicated powerful typesetting system (like LaTeX)
+- Complicated powerful typesetting system (like LaTeX) : We aren't making a paper book.
+- Concise stackable emphasize syntax (like Markdown) : We wish to write more instead decorate.
 
 Remaining Questions:
 
-- How to integrate a complex syntax like a table or a sublist?
+- How to integrate a complex syntax like a table or a sublist? -> Thinking of indentation and dedentation syntax, and a syntax just for the table.
 
 ## Atoms
 
@@ -49,6 +50,11 @@ Example:
 
 ``` hanzzok
 # Heading { id: "another-anchor" }
+
+// You can pass
+   a multiline inline objects
+   to the block constructor
+   may the plugin warn about it.
 ```
 
 #### Multiline Form 1
@@ -80,7 +86,7 @@ Hello, world!
 Example:
 
 ``` hanzzok
-> Was it a cat I saw?
+> "Was it a cat I saw?"
 >
 > Well, probably not.
 ```

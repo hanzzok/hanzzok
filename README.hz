@@ -22,7 +22,7 @@ Not a Goals:
 
 Remaining Questions:
 
-- How to integrate a complex syntax like a table or a sublist?
+- How to integrate a complex syntax like a table or a sublist? -> Thinking of indentation and dedentation syntax, and a syntax just for the table.
 
 ## Atoms
 
