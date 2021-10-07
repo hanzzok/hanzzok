@@ -96,7 +96,7 @@ Must be used in the decorator chain.
 Example:
 
 ``` hanzzok
-[#image("./images/test.png" .width(100%) .height(auto))]
+[#image("./images/test.png") .width(100%) .height(auto)]
 ```
 
 ### Decorator Chain
