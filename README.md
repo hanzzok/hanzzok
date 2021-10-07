@@ -29,31 +29,31 @@ Remaining Questions:
 
 #### Basic Form
 
-``` sezong
+``` hanzzok
 "|" <name> <inline object>* <params>*
 ```
 
 Example:
 
-``` sezong
+``` hanzzok
 | youtube q2QfH1JqtkY { width: 100%, height: auto }
 ```
 
 #### Shortened Form
 
-``` sezong
+``` hanzzok
 <name-composed-of-special-characters> <inline object>* <params>*
 ```
 
 Example:
 
-``` sezong
+``` hanzzok
 # Heading { id: "another-anchor" }
 ```
 
 #### Multiline Form 1
 
-``` sezong
+``` hanzzok
 <name-composed-of-special-characters> <inline object>* <params>* <newline>
 <raw text>
 <name-composed-of-special-characters>
@@ -61,9 +61,9 @@ Example:
 
 Example:
 
-``` sezong
-\``` sezong { highlight: [1, 3] }
-\\``` sezong
+``` hanzzok
+\``` hanzzok { highlight: [1, 3] }
+\\``` hanzzok
 Hello, world!
 \\```
 \```
@@ -71,7 +71,7 @@ Hello, world!
 
 #### Multiline Form 2
 
-``` sezong
+``` hanzzok
 <name-composed-of-special-characters> <inline object>*
 <name-composed-of-special-characters> <inline object>*
 ...
@@ -79,7 +79,7 @@ Hello, world!
 
 Example:
 
-``` sezong
+``` hanzzok
 > Was it a cat I saw?
 >
 > Well, probably not.
@@ -89,24 +89,24 @@ Example:
 
 Must be used in the decorator chain.
 
-``` sezong
+``` hanzzok
 "#" <space> <name> ( "(" <params>+ ")" )?
 ```
 
 Example:
 
-``` sezong
+``` hanzzok
 [#image("./images/test.png" .width(100%) .height(auto))]
 ```
 
 ### Decorator Chain
 
-``` sezong
+``` hanzzok
 "[" <inline object> ("." <name> ("(" <params>+ ")")?)* "]"
 ```
 
 Example:
 
-``` sezong
+``` hanzzok
 [Hello .italic] [world! .bold .italic]
 ```
