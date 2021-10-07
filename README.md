@@ -68,7 +68,7 @@ Example:
 Example:
 
 ``` hanzzok
-\``` hanzzok { highlight: [1, 3] }
+\``` hanzzok { highlight = [1, 3] }
 \\``` hanzzok
 Hello, world!
 \\```
