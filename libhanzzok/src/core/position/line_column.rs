@@ -8,7 +8,7 @@ pub struct LineColumn {
 }
 
 impl fmt::Display for LineColumn {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "L{}:{}", self.line, self.column)
     }
 }

@@ -1,10 +1,9 @@
 use core::fmt;
-use std::io::Read;
 use std::ops::Range;
 
 use logos::{Lexer, Logos};
 
-use crate::core::{LineColumn, Span};
+use crate::core::{DisplayWithoutSpan, LineColumn, Span, Spanned};
 
 #[derive(Default)]
 pub struct TokenizeExtras {
@@ -44,27 +43,31 @@ impl TokenizeExtras {
     }
 }
 
-#[derive(Clone, Debug, Logos)]
+#[derive(Clone, Debug, Logos, PartialEq)]
 #[logos(extras = TokenizeExtras)]
 pub enum TokenKind {
     #[token("#")]
     PunctuationNumberSign,
-    #[token(".")]
-    PunctuationFullStop,
     #[token("(")]
     PunctuationLeftParenthesis,
-    #[token("[")]
-    PunctuationLeftSquareBracket,
-    #[token("{")]
-    PunctuationLeftCurlyBracket,
     #[token(")")]
     PunctuationRightParenthesis,
+    #[token(".")]
+    PunctuationFullStop,
+    #[token("\\")]
+    PunctuationReverseSolidus,
+    #[token("[")]
+    PunctuationLeftSquareBracket,
     #[token("]")]
     PunctuationRightSquareBracket,
+    #[token("{")]
+    PunctuationLeftCurlyBracket,
+    #[token("|")]
+    PunctuationVerticalBar,
     #[token("}")]
     PunctuationRightCurlyBracket,
 
-    #[regex(r"[!#$%&*+,-./:;<=>?@\\\^|~(\[{)\]}]+", |lex| lex.slice().to_owned())]
+    #[regex(r"[!#$%&()*+,-./:;<=>?@\[\]\^_`|~{}]+", |lex| lex.slice().to_owned())]
     PunctuationsOther(String),
 
     /*
@@ -85,22 +88,33 @@ pub enum TokenKind {
     #[regex("[ ]")]
     HorizontalSpace,
 
-    #[regex(r"[^\n\r !#$%&*+,-./:;<=>?@\\\^|~(\[{)\]}]+", |lex| lex.slice().to_owned())]
+    #[regex(r"[^\n\r !#$%&()*+,-./:;<=>?@\[\]\^_`|~{}]+", |lex| lex.slice().to_owned())]
     Word(String),
 
     #[error]
     Error,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Token {
     pub kind: TokenKind,
     pub span: Span,
 }
 
+impl Spanned for Token {
+    fn span(&self) -> Span {
+        self.span.clone()
+    }
+}
+
 impl fmt::Display for Token {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{:?} at {}", self.kind, self.span)
+    }
+}
+impl DisplayWithoutSpan for Token {
+    fn fmt_without_span(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{:?}", self.kind)
     }
 }
 

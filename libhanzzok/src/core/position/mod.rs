@@ -4,4 +4,4 @@ mod spanned;
 
 pub use line_column::LineColumn;
 pub use span::Span;
-pub use spanned::Spanned;
+pub use spanned::{DisplayWithoutSpan, Spanned};

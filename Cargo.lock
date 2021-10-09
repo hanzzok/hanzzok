@@ -155,6 +155,7 @@ dependencies = [
  "logos",
  "nom",
  "serde",
+ "thiserror",
  "toml",
 ]
 

@@ -1,15 +1,43 @@
 use core::fmt;
 
-use super::LineColumn;
+use super::{LineColumn, Spanned};
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Span {
     pub start: LineColumn,
     pub end: LineColumn,
 }
 
+impl Span {
+    pub fn joined(&self, other: &impl Spanned) -> Span {
+        let other = other.span();
+        if self.end < other.start {
+            Span {
+                start: self.start.clone(),
+                end: other.end.clone(),
+            }
+        } else {
+            Span {
+                start: other.start.clone(),
+                end: self.end.clone(),
+            }
+        }
+    }
+    pub fn joined_opt(&self, other: Option<&impl Spanned>) -> Span {
+        other
+            .map(|o| o.span().joined(self))
+            .unwrap_or_else(|| self.clone())
+    }
+}
+
+impl Spanned for Span {
+    fn span(&self) -> Span {
+        self.clone()
+    }
+}
+
 impl fmt::Display for Span {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}..{}", self.start, self.end)
     }
 }

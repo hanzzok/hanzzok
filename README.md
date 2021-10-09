@@ -57,7 +57,7 @@ Example:
    may the plugin warn about it.
 ```
 
-#### Multiline Form 1
+#### Bookend Form
 
 ``` hanzzok
 <name-composed-of-special-characters> <inline object>* <params>* <newline>
@@ -75,7 +75,7 @@ Hello, world!
 \```
 ```
 
-#### Multiline Form 2
+#### Leading Form
 
 ``` hanzzok
 <name-composed-of-special-characters> <inline object>*

@@ -1,4 +1,4 @@
-mod ast;
+pub mod ast;
 mod position;
 
-pub use position::{LineColumn, Span, Spanned};
+pub use position::*;
