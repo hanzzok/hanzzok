@@ -1,9 +1,11 @@
 use nom::{
+    branch::alt,
     error::{ErrorKind, ParseError},
+    multi::many0,
     Err, IResult, InputIter, InputTake, Slice,
 };
 
-use crate::syntax::{Token, TokenKind};
+use crate::syntax::{parse::ParseResult, Token, TokenKind};
 
 use super::HanzzokParser;
 
@@ -74,4 +76,13 @@ pub fn tag<Error: ParseError<HanzzokParser>>(
         Some((t, true)) => Ok((i.slice(1..), t)),
         _ => err_kind(i, ErrorKind::Tag),
     }
+}
+
+pub fn skip_any_spaces(p: HanzzokParser) -> ParseResult<()> {
+    let (p, _) = many0(alt((
+        tag(TokenKind::HorizontalSpace),
+        tag(TokenKind::VerticalSpace),
+    )))(p)?;
+
+    Ok((p, ()))
 }

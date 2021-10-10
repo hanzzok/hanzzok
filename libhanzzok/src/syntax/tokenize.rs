@@ -99,6 +99,7 @@ pub enum TokenKind {
 pub struct Token {
     pub kind: TokenKind,
     pub span: Span,
+    pub text: String,
 }
 
 impl Spanned for Token {
@@ -142,6 +143,7 @@ impl<'a> Iterator for HanzzokTokenizer<'a> {
         } else {
             self.lexer.extras.make_span(self.lexer.span())
         };
-        Some(Token { kind, span })
+        let text = self.lexer.slice().to_owned();
+        Some(Token { kind, span, text })
     }
 }

@@ -30,7 +30,7 @@ impl fmt::Display for TextNode {
                 write!(f, ", ")?;
             }
             token.fmt(f)?;
-            has_written = true
+            has_written = true;
         }
         write!(f, "]")
     }

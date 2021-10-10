@@ -37,7 +37,7 @@ Remaining Questions:
 Example:
 
 ``` hanzzok
-| youtube q2QfH1JqtkY { width: 100%, height: auto }
+| youtube "q2QfH1JqtkY" { width: 100%, height: auto }
 ```
 
 #### Shortened Form
@@ -67,9 +67,9 @@ Example:
 
 Example:
 
-``` hanzzok
-\``` hanzzok { highlight = [1, 3] }
-\\``` hanzzok
+``` "hanzzok"
+\``` "hanzzok" { highlight = [1, 3] }
+\\``` "hanzzok"
 Hello, world!
 \\```
 \```
@@ -116,5 +116,5 @@ Example:
 Example:
 
 ``` hanzzok
-[Hello .italic] [world! .bold .italic]
+[Hello .italic] [world! .bold .italic(true)]
 ```
