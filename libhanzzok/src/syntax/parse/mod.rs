@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use nom::{combinator::map, multi::many0};
 
 use crate::{
@@ -17,7 +19,12 @@ type Error = nom::error::Error<HanzzokParser>;
 type ParseResult<T> = nom::IResult<HanzzokParser, T, Error>;
 
 pub fn parse_root(tokens: Vec<Token>) -> Vec<HanzzokAstNode> {
-    let p = HanzzokParser { offset: 0, tokens };
+    let p = HanzzokParser {
+        // TODO
+        block_constructors: HashMap::new(),
+        offset: 0,
+        tokens,
+    };
     many0(map(parse_inline_object, HanzzokAstNode::InlineObject))(p)
         .map(|(_, vec)| vec)
         .unwrap_or_else(|_| Vec::new())

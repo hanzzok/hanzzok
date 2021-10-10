@@ -1,10 +1,12 @@
 use core::fmt;
 
+pub use block_constructor::BlockConstructorKind;
 pub use decorator_chain::{DecoratorChainNode, DecoratorNode};
 pub use inline_constructor::InlineConstructorNode;
 pub use inline_object::InlineObjectNode;
 pub use text::TextNode;
 
+mod block_constructor;
 mod decorator_chain;
 mod inline_constructor;
 mod inline_object;

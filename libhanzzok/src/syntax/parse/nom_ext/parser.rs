@@ -1,4 +1,5 @@
 use std::{
+    collections::HashMap,
     iter::Enumerate,
     ops::{RangeFrom, RangeTo},
     vec::IntoIter,
@@ -6,10 +7,11 @@ use std::{
 
 use nom::{InputIter, InputLength, InputTake, Needed, Offset, Slice};
 
-use crate::syntax::Token;
+use crate::{core::ast::BlockConstructorKind, syntax::Token};
 
 #[derive(Clone, Debug)]
 pub struct HanzzokParser {
+    pub(crate) block_constructors: HashMap<String, BlockConstructorKind>,
     pub(crate) offset: usize,
     pub(crate) tokens: Vec<Token>,
 }
@@ -57,6 +59,7 @@ impl InputTake for HanzzokParser {
         HanzzokParser {
             tokens: self.tokens[0..count].to_vec(),
             offset: self.offset,
+            block_constructors: self.block_constructors.clone(),
         }
     }
     #[inline]
@@ -66,10 +69,12 @@ impl InputTake for HanzzokParser {
             HanzzokParser {
                 tokens: suffix.to_vec(),
                 offset: self.offset,
+                block_constructors: self.block_constructors.clone(),
             },
             HanzzokParser {
                 tokens: prefix.to_vec(),
                 offset: self.offset + count,
+                block_constructors: self.block_constructors.clone(),
             },
         )
     }
@@ -80,6 +85,7 @@ impl Slice<RangeFrom<usize>> for HanzzokParser {
         HanzzokParser {
             tokens: self.tokens[range.clone()].to_vec(),
             offset: self.offset + range.start,
+            block_constructors: self.block_constructors.clone(),
         }
     }
 }
@@ -89,6 +95,7 @@ impl Slice<RangeTo<usize>> for HanzzokParser {
         HanzzokParser {
             tokens: self.tokens[range].to_vec(),
             offset: self.offset,
+            block_constructors: self.block_constructors.clone(),
         }
     }
 }
