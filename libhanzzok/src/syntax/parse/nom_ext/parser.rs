@@ -10,7 +10,6 @@ use crate::syntax::Token;
 
 #[derive(Clone, Debug)]
 pub struct HanzzokParser {
-    pub(crate) block_constructor_names: Vec<String>,
     pub(crate) offset: usize,
     pub(crate) tokens: Vec<Token>,
 }
@@ -58,7 +57,6 @@ impl InputTake for HanzzokParser {
         HanzzokParser {
             tokens: self.tokens[0..count].to_vec(),
             offset: self.offset,
-            block_constructor_names: self.block_constructor_names.clone(),
         }
     }
     #[inline]
@@ -68,12 +66,10 @@ impl InputTake for HanzzokParser {
             HanzzokParser {
                 tokens: suffix.to_vec(),
                 offset: self.offset,
-                block_constructor_names: self.block_constructor_names.clone(),
             },
             HanzzokParser {
                 tokens: prefix.to_vec(),
                 offset: self.offset + count,
-                block_constructor_names: self.block_constructor_names.clone(),
             },
         )
     }
@@ -84,7 +80,6 @@ impl Slice<RangeFrom<usize>> for HanzzokParser {
         HanzzokParser {
             tokens: self.tokens[range.clone()].to_vec(),
             offset: self.offset + range.start,
-            block_constructor_names: self.block_constructor_names.clone(),
         }
     }
 }
@@ -94,7 +89,6 @@ impl Slice<RangeTo<usize>> for HanzzokParser {
         HanzzokParser {
             tokens: self.tokens[range].to_vec(),
             offset: self.offset,
-            block_constructor_names: self.block_constructor_names.clone(),
         }
     }
 }
