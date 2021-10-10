@@ -91,7 +91,9 @@ Example:
 > Well, probably not.
 ```
 
-### Inline Constructor
+### Inline Object
+
+#### Inline Constructor
 
 Must be used in the decorator chain.
 
@@ -105,7 +107,7 @@ Example:
 [#image("./images/test.png") .width(100%) .height(auto)]
 ```
 
-### Decorator Chain
+#### Decorator Chain
 
 ``` hanzzok
 "[" <inline object> ("." <name> ("(" <params>+ ")")?)* "]"

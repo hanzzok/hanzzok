@@ -2,16 +2,15 @@ use nom::{branch::alt, combinator::map, multi::many0};
 
 use crate::{
     core::ast::HanzzokAstNode,
-    syntax::parse::{
-        nom_ext::HanzzokParser,
-        parse_text::{parse_escaped_text, parse_fallback_text},
-    },
+    syntax::parse::{nom_ext::HanzzokParser, parse_inline_object::parse_inline_object},
 };
 
 use super::Token;
 
 mod nom_ext;
 mod parse_decorator_chain;
+mod parse_inline_constructor;
+mod parse_inline_object;
 mod parse_text;
 
 type Error = nom::error::Error<HanzzokParser>;
@@ -21,12 +20,10 @@ pub fn parse_root(tokens: Vec<Token>) -> Vec<HanzzokAstNode> {
     let p = HanzzokParser {
         // TODO
         block_constructor_names: vec![],
+        offset: 0,
         tokens,
     };
-    many0(alt((
-        map(parse_escaped_text, HanzzokAstNode::Text),
-        map(parse_fallback_text, HanzzokAstNode::Text),
-    )))(p)
-    .map(|(_, vec)| vec)
-    .unwrap_or_else(|_| Vec::new())
+    many0(map(parse_inline_object, HanzzokAstNode::InlineObject))(p)
+        .map(|(_, vec)| vec)
+        .unwrap_or_else(|_| Vec::new())
 }

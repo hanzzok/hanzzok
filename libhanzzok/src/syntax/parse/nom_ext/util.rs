@@ -37,6 +37,21 @@ where
     }
 }
 
+pub fn satisfy_transform<F, U, Error: ParseError<HanzzokParser>>(
+    cond: F,
+) -> impl Fn(HanzzokParser) -> IResult<HanzzokParser, (Token, U), Error>
+where
+    F: Fn(&Token) -> Option<U>,
+{
+    move |i| match (i).iter_elements().next().map(|t| {
+        let b = cond(&t);
+        (t, b)
+    }) {
+        Some((t, Some(res))) => Ok((i.slice(1..), (t, res))),
+        _ => err_kind(i, ErrorKind::Satisfy),
+    }
+}
+
 pub fn any<Error: ParseError<HanzzokParser>>(
     i: HanzzokParser,
 ) -> IResult<HanzzokParser, Token, Error> {

@@ -1,12 +1,17 @@
-use std::{iter::Enumerate, ops::RangeFrom, vec::IntoIter};
+use std::{
+    iter::Enumerate,
+    ops::{RangeFrom, RangeTo},
+    vec::IntoIter,
+};
 
-use nom::{InputIter, InputLength, InputTake, Needed, Slice};
+use nom::{InputIter, InputLength, InputTake, Needed, Offset, Slice};
 
 use crate::syntax::Token;
 
 #[derive(Clone, Debug)]
 pub struct HanzzokParser {
     pub(crate) block_constructor_names: Vec<String>,
+    pub(crate) offset: usize,
     pub(crate) tokens: Vec<Token>,
 }
 
@@ -52,6 +57,7 @@ impl InputTake for HanzzokParser {
     fn take(&self, count: usize) -> Self {
         HanzzokParser {
             tokens: self.tokens[0..count].to_vec(),
+            offset: self.offset,
             block_constructor_names: self.block_constructor_names.clone(),
         }
     }
@@ -61,10 +67,12 @@ impl InputTake for HanzzokParser {
         (
             HanzzokParser {
                 tokens: suffix.to_vec(),
+                offset: self.offset,
                 block_constructor_names: self.block_constructor_names.clone(),
             },
             HanzzokParser {
                 tokens: prefix.to_vec(),
+                offset: self.offset + count,
                 block_constructor_names: self.block_constructor_names.clone(),
             },
         )
@@ -74,8 +82,25 @@ impl InputTake for HanzzokParser {
 impl Slice<RangeFrom<usize>> for HanzzokParser {
     fn slice(&self, range: RangeFrom<usize>) -> Self {
         HanzzokParser {
-            tokens: self.tokens[range].to_vec(),
+            tokens: self.tokens[range.clone()].to_vec(),
+            offset: self.offset + range.start,
             block_constructor_names: self.block_constructor_names.clone(),
         }
+    }
+}
+
+impl Slice<RangeTo<usize>> for HanzzokParser {
+    fn slice(&self, range: RangeTo<usize>) -> Self {
+        HanzzokParser {
+            tokens: self.tokens[range].to_vec(),
+            offset: self.offset,
+            block_constructor_names: self.block_constructor_names.clone(),
+        }
+    }
+}
+
+impl Offset for HanzzokParser {
+    fn offset(&self, second: &Self) -> usize {
+        second.offset - self.offset
     }
 }

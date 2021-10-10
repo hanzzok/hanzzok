@@ -3,7 +3,7 @@ use std::ops::Range;
 
 use logos::{Lexer, Logos};
 
-use crate::core::{DisplayWithoutSpan, LineColumn, Span, Spanned};
+use crate::core::{DisplayWithSpan, LineColumn, Span, Spanned};
 
 #[derive(Default)]
 pub struct TokenizeExtras {
@@ -67,7 +67,7 @@ pub enum TokenKind {
     #[token("}")]
     PunctuationRightCurlyBracket,
 
-    #[regex(r"[!#$%&()*+,-./:;<=>?@\[\]\^_`|~{}]+", |lex| lex.slice().to_owned())]
+    #[regex(r"[!$%&*+,-/:;<=>?@\^_`~]+", |lex| lex.slice().to_owned())]
     PunctuationsOther(String),
 
     /*
@@ -88,7 +88,7 @@ pub enum TokenKind {
     #[regex("[ ]")]
     HorizontalSpace,
 
-    #[regex(r"[^\n\r !#$%&()*+,-./:;<=>?@\[\]\^_`|~{}]+", |lex| lex.slice().to_owned())]
+    #[regex(r"[^\n\r !#$%&()*+,-.\\/:;<=>?@\[\]\^_`|~{}]+", |lex| lex.slice().to_owned())]
     Word(String),
 
     #[error]
@@ -109,12 +109,12 @@ impl Spanned for Token {
 
 impl fmt::Display for Token {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{:?} at {}", self.kind, self.span)
+        write!(f, "{:?}", self.kind)
     }
 }
-impl DisplayWithoutSpan for Token {
-    fn fmt_without_span(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{:?}", self.kind)
+impl DisplayWithSpan for Token {
+    fn fmt_with_span(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{:?} at {}", self.kind, self.span)
     }
 }
 
