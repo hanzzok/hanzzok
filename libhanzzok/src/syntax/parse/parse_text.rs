@@ -1,12 +1,26 @@
+use nom::{branch::alt, combinator::map, multi::many1};
+
 use crate::{
     core::ast::TextNode,
     syntax::{parse::nom_ext::tag, TokenKind},
 };
 
 use super::{
-    nom_ext::{any, HanzzokParser},
+    nom_ext::{any, satisfy, HanzzokParser},
     ParseResult,
 };
+
+pub fn parse_text(p: HanzzokParser) -> ParseResult<TextNode> {
+    map(
+        many1(alt((
+            satisfy(|t| matches!(t.kind, TokenKind::Word(_) | TokenKind::PunctuationsOther(_))),
+            tag(TokenKind::HorizontalSpace),
+        ))),
+        |tokens| TextNode {
+            tokens: tokens.into_iter().map(|t| (t, true)).collect(),
+        },
+    )(p)
+}
 
 pub fn parse_fallback_text(p: HanzzokParser) -> ParseResult<TextNode> {
     let (p, token) = any(p)?;

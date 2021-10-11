@@ -1,6 +1,6 @@
 use core::fmt;
 
-use crate::core::Span;
+use crate::core::{Span, Spanned};
 
 use super::InlineObjectNode;
 
@@ -9,6 +9,12 @@ pub struct DecoratorChainNode {
     pub span: Span,
     pub main_text: Box<InlineObjectNode>,
     pub decorators: Vec<DecoratorNode>,
+}
+
+impl Spanned for DecoratorChainNode {
+    fn span(&self) -> Span {
+        self.span.clone()
+    }
 }
 
 impl fmt::Display for DecoratorChainNode {

@@ -31,19 +31,19 @@ Remaining Questions:
 #### Basic Form
 
 ``` hanzzok
-"|" <name> <inline object>* <params>*
+"|" <name> <inline object>* <param>
 ```
 
 Example:
 
 ``` hanzzok
-| youtube "q2QfH1JqtkY" { width: 100%, height: auto }
+| youtube q2QfH1JqtkY { width: 100%, height: auto }
 ```
 
 #### Shortened Form
 
 ``` hanzzok
-<name-composed-of-special-characters> <inline object>* <params>*
+<name-composed-of-special-characters> <inline object>* <param>
 ```
 
 Example:
@@ -60,16 +60,16 @@ Example:
 #### Bookend Form
 
 ``` hanzzok
-<name-composed-of-special-characters> <inline object>* <params>* <newline>
+<name-composed-of-special-characters> <inline object>* <param> <newline>
 <raw text>
 <name-composed-of-special-characters>
 ```
 
 Example:
 
-``` "hanzzok"
-\``` "hanzzok" { highlight = [1, 3] }
-\\``` "hanzzok"
+``` hanzzok
+\``` hanzzok { highlight = [1, 3] }
+\\``` hanzzok
 Hello, world!
 \\```
 \```

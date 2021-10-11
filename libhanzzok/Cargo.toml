@@ -11,3 +11,6 @@ nom = "7.0.0"
 serde = "1.0.130"
 thiserror = "1.0.29"
 toml = "0.5.8"
+
+[dev-dependencies]
+pretty_assertions = "1.0.0"

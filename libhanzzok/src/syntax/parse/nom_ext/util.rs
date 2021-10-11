@@ -86,3 +86,9 @@ pub fn skip_any_spaces(p: HanzzokParser) -> ParseResult<()> {
 
     Ok((p, ()))
 }
+
+pub fn skip_horizontal_spaces(p: HanzzokParser) -> ParseResult<()> {
+    let (p, _) = many0(tag(TokenKind::HorizontalSpace))(p)?;
+
+    Ok((p, ()))
+}

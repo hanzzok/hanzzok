@@ -6,14 +6,65 @@ use std::{
 };
 
 use nom::{InputIter, InputLength, InputTake, Needed, Offset, Slice};
+use tokenize::HanzzokTokenizer;
 
-use crate::{core::ast::BlockConstructorKind, syntax::Token};
+use crate::{
+    core::ast::BlockConstructorForm,
+    syntax::{parse::ParseResult, tokenize, Token, TokenKind},
+};
+
+use super::satisfy;
 
 #[derive(Clone, Debug)]
 pub struct HanzzokParser {
-    pub(crate) block_constructors: HashMap<String, BlockConstructorKind>,
+    pub(crate) block_constructors: HashMap<BlockConstructorForm, Vec<BlockConstructorNameParser>>,
     pub(crate) offset: usize,
     pub(crate) tokens: Vec<Token>,
+}
+
+#[derive(Clone, Debug)]
+pub(crate) struct BlockConstructorNameParser {
+    kinds: Vec<TokenKind>,
+}
+
+impl BlockConstructorNameParser {
+    pub(crate) fn parse(&self, mut p: HanzzokParser) -> ParseResult<Vec<Token>> {
+        let mut tokens = Vec::new();
+
+        for kind in &self.kinds {
+            let res = satisfy(|token| &token.kind == kind)(p)?;
+            p = res.0;
+            tokens.push(res.1);
+        }
+
+        Ok((p, tokens))
+    }
+}
+
+impl HanzzokParser {
+    pub fn new(
+        tokens: Vec<Token>,
+        block_constructors: HashMap<String, BlockConstructorForm>,
+    ) -> Self {
+        HanzzokParser {
+            block_constructors: {
+                let mut map = HashMap::new();
+
+                for (name, form) in &block_constructors {
+                    let group = map.entry(form.clone()).or_insert(Vec::new());
+                    group.push(BlockConstructorNameParser {
+                        kinds: HanzzokTokenizer::from_source(name.as_ref())
+                            .map(|token| token.kind)
+                            .collect(),
+                    })
+                }
+
+                map
+            },
+            offset: 0,
+            tokens,
+        }
+    }
 }
 
 impl InputLength for HanzzokParser {

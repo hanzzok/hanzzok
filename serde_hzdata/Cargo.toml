@@ -9,3 +9,6 @@ edition = "2018"
 regex = "1.5.4"
 serde = { version = "1.0.130", features = ["derive"] }
 thiserror = "1.0.29"
+
+[dev-dependencies]
+pretty_assertions = "1.0.0"

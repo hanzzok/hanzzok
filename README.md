@@ -31,7 +31,7 @@ Remaining Questions:
 #### Basic Form
 
 ``` hanzzok
-"|" <name> <inline object>* <params>*
+"|" <name> <inline object>* <param>
 ```
 
 Example:
@@ -43,7 +43,7 @@ Example:
 #### Shortened Form
 
 ``` hanzzok
-<name-composed-of-special-characters> <inline object>* <params>*
+<name-composed-of-special-characters> <inline object>* <param>
 ```
 
 Example:
@@ -60,7 +60,7 @@ Example:
 #### Bookend Form
 
 ``` hanzzok
-<name-composed-of-special-characters> <inline object>* <params>* <newline>
+<name-composed-of-special-characters> <inline object>* <param> <newline>
 <raw text>
 <name-composed-of-special-characters>
 ```
@@ -116,5 +116,5 @@ Example:
 Example:
 
 ``` hanzzok
-[Hello .italic] [world! .bold .italic]
+[Hello .italic] [world! .bold .italic(true)]
 ```
