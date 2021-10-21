@@ -16,7 +16,7 @@ use crate::{
 use super::{
     nom_ext::{satisfy_transform, skip_horizontal_spaces, tag, HanzzokParser},
     parse_inline_object::parse_inline_object,
-    Error, ParseResult,
+    ParseResult,
 };
 
 pub fn parse_block_constructor(p: HanzzokParser) -> ParseResult<BlockConstructorNode> {
@@ -49,7 +49,6 @@ fn parse_block_constructor_params(p: HanzzokParser) -> ParseResult<Vec<Token>> {
 }
 
 pub fn parse_block_constructor_basic(p: HanzzokParser) -> ParseResult<BlockConstructorNode> {
-    let (p, _) = tag(TokenKind::VerticalSpace)(p)?;
     let (p, vertical_bar) = tag(TokenKind::PunctuationVerticalBar)(p)?;
 
     let (p, _) = skip_horizontal_spaces(p)?;
@@ -100,14 +99,13 @@ pub fn parse_block_constructor_basic(p: HanzzokParser) -> ParseResult<BlockConst
 }
 
 pub fn parse_block_constructor_shortened(p: HanzzokParser) -> ParseResult<BlockConstructorNode> {
-    let (p, _) = tag(TokenKind::VerticalSpace)(p)?;
-
     let (p, name) = match p
         .block_constructors
         .get(&BlockConstructorForm::Shortened)
         .iter()
         .flat_map(|v| v.iter())
-        .find_map(|parser| parser.parse(p.clone()).ok())
+        .filter_map(|parser| parser.parse(p.clone()).ok())
+        .max_by_key(|(_, t)| t.len())
     {
         Some(v) => v,
         None => return fail(p),

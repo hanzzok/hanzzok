@@ -1,4 +1,9 @@
-use nom::{branch::alt, combinator::map, multi::many1};
+use nom::{
+    branch::alt,
+    combinator::{fail, map, not},
+    multi::many1,
+    sequence::{preceded, tuple},
+};
 
 use crate::{
     core::ast::TextNode,
@@ -14,6 +19,13 @@ pub fn parse_text(p: HanzzokParser) -> ParseResult<TextNode> {
     map(
         many1(alt((
             satisfy(|t| matches!(t.kind, TokenKind::Word(_) | TokenKind::PunctuationsOther(_))),
+            preceded(
+                not(tuple((
+                    tag(TokenKind::VerticalSpace),
+                    tag(TokenKind::VerticalSpace),
+                ))),
+                tag(TokenKind::VerticalSpace),
+            ),
             tag(TokenKind::HorizontalSpace),
         ))),
         |tokens| TextNode {
@@ -24,6 +36,10 @@ pub fn parse_text(p: HanzzokParser) -> ParseResult<TextNode> {
 
 pub fn parse_fallback_text(p: HanzzokParser) -> ParseResult<TextNode> {
     let (p, token) = any(p)?;
+
+    if token.kind == TokenKind::VerticalSpace {
+        return fail(p);
+    }
 
     Ok((
         p,

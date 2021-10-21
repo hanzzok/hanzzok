@@ -11,7 +11,7 @@ pub struct TextNode {
 }
 
 impl TextNode {
-    fn merged_with(&self, other: &TextNode) -> TextNode {
+    pub fn merged_with(&self, other: &TextNode) -> TextNode {
         TextNode {
             tokens: [self.tokens.clone(), other.tokens.clone()].concat(),
         }

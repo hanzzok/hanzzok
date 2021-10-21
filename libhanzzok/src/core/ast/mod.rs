@@ -6,6 +6,8 @@ pub use inline_constructor::InlineConstructorNode;
 pub use inline_object::InlineObjectNode;
 pub use text::TextNode;
 
+use super::Span;
+
 mod block_constructor;
 mod decorator_chain;
 mod inline_constructor;
@@ -16,6 +18,7 @@ mod text;
 pub enum HanzzokAstNode {
     BlockConstructor(BlockConstructorNode),
     InlineObject(InlineObjectNode),
+    Newline(Span),
 }
 
 impl fmt::Display for HanzzokAstNode {
@@ -23,6 +26,7 @@ impl fmt::Display for HanzzokAstNode {
         match self {
             HanzzokAstNode::BlockConstructor(node) => node.fmt(f),
             HanzzokAstNode::InlineObject(node) => node.fmt(f),
+            HanzzokAstNode::Newline(_) => write!(f, "Newline"),
         }
     }
 }
