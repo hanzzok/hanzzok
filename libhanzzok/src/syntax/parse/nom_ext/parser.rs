@@ -44,6 +44,7 @@ impl HanzzokParserTracker {
 
 #[derive(Clone, Debug)]
 pub(crate) struct BlockConstructorNameParser {
+    pub(crate) name: String,
     kinds: Vec<TokenKind>,
 }
 
@@ -73,6 +74,7 @@ impl HanzzokParser {
                 for (name, form) in &block_constructors {
                     let group = map.entry(form.clone()).or_insert(Vec::new());
                     group.push(BlockConstructorNameParser {
+                        name: name.clone(),
                         kinds: HanzzokTokenizer::from_source(name.as_ref())
                             .map(|token| token.kind)
                             .collect(),

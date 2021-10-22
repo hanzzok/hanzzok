@@ -1,8 +1,12 @@
 use crate::api::BlockConstructorRule;
 
 pub use heading::heading_plugin;
+pub use list::list_plugin;
+pub use quotation::quotation_plugin;
 
 mod heading;
+mod list;
+mod quotation;
 
 pub struct Plugin {
     pub(crate) block_constructors: Vec<Box<dyn BlockConstructorRule>>,

@@ -22,3 +22,9 @@ impl<W: Walker<T>, T: Clone> Walker<&'_ T> for W {
         self.walk(node.clone())
     }
 }
+
+impl<W: Walker<T>, T> Walker<Vec<T>> for W {
+    fn walk(&self, nodes: Vec<T>) -> Vec<HtmlNode> {
+        nodes.into_iter().flat_map(|node| self.walk(node)).collect()
+    }
+}

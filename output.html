@@ -15,12 +15,20 @@
             font-size: 1.25em;
         }
         h1,h2,h3,h4,h5,h6 {
-            margin:  0.5rem 0;
+            margin: 0.5rem 0;
         }
         p,ul,ol {
             margin-bottom: 1em;
             color: #1d1d1d;
             font-family: sans-serif;
+        }
+        blockquote {
+            margin: 0;
+            border: 4px dashed #d2d2d2;
+            border-left: 8px solid #c2c2c2;
+            border-radius: 0 16px 16px 0;
+            background: #e2e2e2;
+            padding-left: 1em;
         }
     </style>
 </head>
@@ -29,29 +37,21 @@
     <main>
         <p>
             <div>
-<h1>hanzzok</h1><p>A small predictable markup language.</p><p>> To the big site while turning over a page.
-> 
-> 한 쪽씩 넘기며 한(큰) 쪽으로.</p><p>Goals:</p><p>- Make the language predictable
-- Have a small ruleset
-- Make documents store contents instead of styles
-- Make components creation and adoption easy
-- Make documents platform-agnostic
-- Make tool integration easy and rich</p><p>Not a Goals:</p><p>- Complicated powerful typesetting system (like LaTeX) : We aren't making a paper book.
-- Concise stackable emphasize syntax (like Markdown) : We wish to write more instead decorate.</p><p>Remaining Questions:</p><p>- How to integrate a complex syntax like a table or a sublist? -> Thinking of indentation and dedentation syntax, and a syntax just for the table.</p><h2>Atoms</h2><h3>Block Constructor</h3><h4>Basic Form</h4><p>``` hanzzok
-"|" <name> <inline object>* <param>
+<h1>hanzzok</h1><p>A small predictable markup language.</p><blockquote><p>To the big site while turning over a page.</p><p>한 쪽씩 넘기며 한(큰) 쪽으로.</p></blockquote><p>Goals:</p><ul><li>Make the language predictable</li><li>Have a small ruleset</li><li>Make documents store contents instead of styles</li><li>Make components creation and adoption easy</li><li>Make documents platform-agnostic</li><li>Make tool integration easy and rich</li></ul><p>Not a Goals:</p><ul><li>Complicated powerful typesetting system (like LaTeX) : We aren&#x27;t making a paper book.</li><li>Concise stackable emphasize syntax (like Markdown) : We wish to write more instead decorate.</li></ul><p>Remaining Questions:</p><ul><li>How to integrate a complex syntax like a table or a sublist? -&gt; Thinking of indentation and dedentation syntax, and a syntax just for the table.</li></ul><h2>Atoms</h2><h3>Block Constructor</h3><h4>Basic Form</h4><p>``` hanzzok
+&quot;|&quot; &lt;name&gt; &lt;inline object&gt;* &lt;param&gt;
 ```</p><p>Example:</p><p>``` hanzzok
-| youtube q2QfH1JqtkY { width: 100%, height: auto }
+</p>| youtube q2QfH1JqtkY { <p>
 ```</p><h4>Shortened Form</h4><p>``` hanzzok
-<name-composed-of-special-characters> <inline object>* <param>
+&lt;name-composed-of-special-characters&gt; &lt;inline object&gt;* &lt;param&gt;
 ```</p><p>Example:</p><p>``` hanzzok
-# Heading { id: "another-anchor" }</p><p>// You can pass
+</p><h1>Heading </h1><p>&#x2f;&#x2f; You can pass
    a multiline inline objects
    to the block constructor
    may the plugin warn about it.
 ```</p><h4>Bookend Form</h4><p>``` hanzzok
-<name-composed-of-special-characters> <inline object>* <param> <newline>
-<raw text>
-<name-composed-of-special-characters>
+&lt;name-composed-of-special-characters&gt; &lt;inline object&gt;* &lt;param&gt; &lt;newline&gt;
+&lt;raw text&gt;
+&lt;name-composed-of-special-characters&gt;
 ```</p><p>Example:</p><p>``` hanzzok
 ``` hanzzok { highlight = </p><p> }
 \``` hanzzok
@@ -59,19 +59,16 @@ Hello, world!
 \```
 ```
 ```</p><h4>Leading Form</h4><p>``` hanzzok
-<name-composed-of-special-characters> <inline object>*
-<name-composed-of-special-characters> <inline object>*
+&lt;name-composed-of-special-characters&gt; &lt;inline object&gt;*
+&lt;name-composed-of-special-characters&gt; &lt;inline object&gt;*
 ...
 ```</p><p>Example:</p><p>``` hanzzok
-> "Was it a cat I saw?"
->
-> Well, probably not.
-```</p><h3>Inline Object</h3><h4>Inline Constructor</h4><p>Must be used in the decorator chain.</p><p>``` hanzzok
-"#" <space> <name> ( "(" <params>+ ")" )?
+</p><blockquote><p>&quot;Was it a cat I saw?&quot;</p><p>Well, probably not.</p></blockquote><p>```</p><h3>Inline Object</h3><h4>Inline Constructor</h4><p>Must be used in the decorator chain.</p><p>``` hanzzok
+&quot;#&quot; &lt;space&gt; &lt;name&gt; ( &quot;(&quot; &lt;params&gt;+ &quot;)&quot; )?
 ```</p><p>Example:</p><p>``` hanzzok
-[#image("./images/test.png") .width(100%) .height(auto)]
+[#image(&quot;.&#x2f;images&#x2f;test.png&quot;) .width(100%) .height(auto)]
 ```</p><h4>Decorator Chain</h4><p>``` hanzzok
-"[" <inline object> ("." <name> ("(" <params>+ ")")?)* "]"
+&quot;[&quot; &lt;inline object&gt; (&quot;.&quot; &lt;name&gt; (&quot;(&quot; &lt;params&gt;+ &quot;)&quot;)?)* &quot;]&quot;
 ```</p><p>Example:</p><p>``` hanzzok
 </p><p> </p><p>
 ```

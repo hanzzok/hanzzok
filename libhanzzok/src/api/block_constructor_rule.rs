@@ -13,6 +13,6 @@ pub trait BlockConstructorRule {
         context: &Context,
         main_text: Vec<InlineObjectNode>,
         param: Option<String>,
-        multiline_text: Vec<InlineObjectNode>,
+        multiline_text: Vec<Vec<InlineObjectNode>>,
     ) -> Option<HtmlNode>;
 }

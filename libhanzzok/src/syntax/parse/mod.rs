@@ -8,10 +8,17 @@ use nom::{
 
 use crate::{
     core::{
-        ast::{BlockConstructorForm, HanzzokAstNode, InlineObjectNode},
+        ast::{BlockConstructorForm, HanzzokAstNode, InlineObjectNode, TextNode},
         Compiler,
     },
-    syntax::parse::{nom_ext::HanzzokParser, parse_inline_object::parse_inline_object},
+    syntax::{
+        parse::{
+            nom_ext::{tag, HanzzokParser},
+            parse_inline_object::parse_inline_object,
+            parse_text::parse_single_newline,
+        },
+        TokenKind,
+    },
 };
 
 use self::{parse_block_constructor::parse_block_constructor, parse_newline::parse_newline};
@@ -37,8 +44,6 @@ pub fn parse_root(tokens: Vec<Token>, compiler: &Compiler) -> Vec<HanzzokAstNode
             map.insert(key.clone(), rule.form());
         }
 
-        map.insert(">".to_string(), BlockConstructorForm::Leading);
-
         map
     });
     let nodes: Vec<_> = many0(alt((
@@ -52,6 +57,9 @@ pub fn parse_root(tokens: Vec<Token>, compiler: &Compiler) -> Vec<HanzzokAstNode
                 .collect()
         }),
         map(parse_newline, |node| vec![node]),
+        map(parse_single_newline, |node| {
+            vec![HanzzokAstNode::InlineObject(InlineObjectNode::Text(node))]
+        }),
     )))(p)
     .map(|(_, vec)| vec)
     .unwrap_or_else(|_| Vec::new())

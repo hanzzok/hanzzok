@@ -19,19 +19,23 @@ pub fn parse_text(p: HanzzokParser) -> ParseResult<TextNode> {
     map(
         many1(alt((
             satisfy(|t| matches!(t.kind, TokenKind::Word(_) | TokenKind::PunctuationsOther(_))),
-            preceded(
-                not(tuple((
-                    tag(TokenKind::VerticalSpace),
-                    tag(TokenKind::VerticalSpace),
-                ))),
-                tag(TokenKind::VerticalSpace),
-            ),
             tag(TokenKind::HorizontalSpace),
         ))),
         |tokens| TextNode {
             tokens: tokens.into_iter().map(|t| (t, true)).collect(),
         },
     )(p)
+}
+
+pub fn parse_single_newline(p: HanzzokParser) -> ParseResult<TextNode> {
+    let (p, token) = tag(TokenKind::VerticalSpace)(p)?;
+
+    Ok((
+        p,
+        TextNode {
+            tokens: vec![(token, true)],
+        },
+    ))
 }
 
 pub fn parse_fallback_text(p: HanzzokParser) -> ParseResult<TextNode> {

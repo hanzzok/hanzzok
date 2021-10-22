@@ -1,7 +1,7 @@
 use crate::{
     api::BlockConstructorRule,
     codegen::{Context, HtmlNode, Walker},
-    core::ast::BlockConstructorForm,
+    core::ast::{BlockConstructorForm, InlineObjectNode},
 };
 
 pub struct HxBlockConstructorRule {
@@ -20,16 +20,13 @@ impl BlockConstructorRule for HxBlockConstructorRule {
     fn apply(
         &self,
         context: &Context,
-        main_text: Vec<crate::core::ast::InlineObjectNode>,
-        param: Option<String>,
-        multiline_text: Vec<crate::core::ast::InlineObjectNode>,
+        main_text: Vec<InlineObjectNode>,
+        _param: Option<String>,
+        _: Vec<Vec<InlineObjectNode>>,
     ) -> Option<crate::codegen::HtmlNode> {
         Some(HtmlNode::create_tag(
             format!("h{}", self.depth),
-            &main_text
-                .iter()
-                .flat_map(|node| context.walk(node))
-                .collect::<Vec<_>>(),
+            &context.walk(main_text),
         ))
     }
 }

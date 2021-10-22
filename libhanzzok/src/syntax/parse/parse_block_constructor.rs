@@ -1,3 +1,5 @@
+use std::iter::once;
+
 use nom::{
     branch::alt,
     combinator::{fail, map, not, opt},
@@ -5,16 +7,17 @@ use nom::{
     sequence::{preceded, tuple},
 };
 
+use crate::core::Spanned;
 use crate::{
-    core::{
-        ast::{BlockConstructorForm, BlockConstructorNode},
-        Spanned,
-    },
+    core::ast::{BlockConstructorForm, BlockConstructorNode, InlineObjectNode},
     syntax::{parse::nom_ext::any, Token, TokenKind},
 };
 
 use super::{
-    nom_ext::{satisfy_transform, skip_horizontal_spaces, tag, HanzzokParser},
+    nom_ext::{
+        satisfy_transform, skip_any_spaces, skip_horizontal_spaces, tag,
+        BlockConstructorNameParser, HanzzokParser,
+    },
     parse_inline_object::parse_inline_object,
     ParseResult,
 };
@@ -22,6 +25,7 @@ use super::{
 pub fn parse_block_constructor(p: HanzzokParser) -> ParseResult<BlockConstructorNode> {
     alt((
         parse_block_constructor_basic,
+        parse_block_constructor_leading,
         parse_block_constructor_shortened,
     ))(p)
 }
@@ -79,8 +83,6 @@ pub fn parse_block_constructor_basic(p: HanzzokParser) -> ParseResult<BlockConst
     }))(p)?;
     let param = param.as_ref();
 
-    let multiline_text = Vec::new();
-
     let tokens = tt.end(&p);
 
     Ok((
@@ -90,7 +92,7 @@ pub fn parse_block_constructor_basic(p: HanzzokParser) -> ParseResult<BlockConst
             name: name.1,
             main_text,
             param: param.map(|(s, _)| s.clone()),
-            multiline_text,
+            multiline_text: Vec::new(),
             tokens,
         },
     ))
@@ -102,8 +104,8 @@ pub fn parse_block_constructor_shortened(p: HanzzokParser) -> ParseResult<BlockC
     let (p, name) = match p
         .block_constructors
         .get(&BlockConstructorForm::Shortened)
-        .iter()
-        .flat_map(|v| v.iter())
+        .into_iter()
+        .flatten()
         .filter_map(|parser| parser.parse(p.clone()).ok())
         .max_by_key(|(_, t)| t.len())
     {
@@ -131,8 +133,6 @@ pub fn parse_block_constructor_shortened(p: HanzzokParser) -> ParseResult<BlockC
     }))(p)?;
     let param = param.as_ref();
 
-    let multiline_text = Vec::new();
-
     let tokens = tt.end(&p);
 
     Ok((
@@ -142,8 +142,64 @@ pub fn parse_block_constructor_shortened(p: HanzzokParser) -> ParseResult<BlockC
             name,
             main_text,
             param: param.map(|(s, _)| s.clone()),
+            multiline_text: Vec::new(),
+            tokens,
+        },
+    ))
+}
+
+fn parse_block_constructor_leading(p: HanzzokParser) -> ParseResult<BlockConstructorNode> {
+    let tt = p.create_tracker();
+
+    let (parser, _) = match p
+        .block_constructors
+        .get(&BlockConstructorForm::Leading)
+        .into_iter()
+        .flatten()
+        .filter_map(|parser| parser.parse(p.clone()).ok().map(|(_, t)| (parser, t)))
+        .max_by_key(|(_, t)| t.len())
+    {
+        Some(v) => v,
+        None => return fail(p),
+    };
+    let parser = parser.clone();
+
+    let (p, multiline_text) = parse_block_constructor_leading_base(&parser, p)?;
+
+    let tokens = tt.end(&p);
+
+    Ok((
+        p,
+        BlockConstructorNode {
+            form: BlockConstructorForm::Leading,
+            name: parser.name,
+            main_text: Vec::new(),
+            param: None,
             multiline_text,
             tokens,
         },
+    ))
+}
+
+fn parse_block_constructor_leading_base(
+    name_parser: &BlockConstructorNameParser,
+    p: HanzzokParser,
+) -> ParseResult<Vec<Vec<InlineObjectNode>>> {
+    let (p, _) = name_parser.parse(p)?;
+
+    let (p, _) = skip_horizontal_spaces(p)?;
+
+    let (p, main_text) = many0(preceded(
+        not(tag(TokenKind::VerticalSpace)),
+        parse_inline_object,
+    ))(p)?;
+
+    let (p, _) = skip_any_spaces(p)?;
+
+    let (p, next) = opt(|p| parse_block_constructor_leading_base(name_parser, p))(p)?;
+
+    Ok((
+        p,
+        once(main_text).chain(next.into_iter().flatten()).collect(),
     ))
 }

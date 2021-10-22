@@ -18,7 +18,7 @@ pub struct BlockConstructorNode {
     pub name: String,
     pub main_text: Vec<InlineObjectNode>,
     pub param: Option<String>,
-    pub multiline_text: Vec<InlineObjectNode>,
+    pub multiline_text: Vec<Vec<InlineObjectNode>>,
     pub tokens: Vec<Token>,
 }
 
@@ -39,11 +39,20 @@ impl fmt::Display for BlockConstructorNode {
         }
         write!(f, "], param={:?}, multiline_text=[", self.param)?;
         let mut has_written = false;
-        for node in &self.multiline_text {
+        for nodes in &self.multiline_text {
             if has_written {
                 write!(f, ", ")?;
             }
-            node.fmt(f)?;
+            write!(f, "[")?;
+            let mut inner_has_written = false;
+            for node in nodes {
+                if inner_has_written {
+                    write!(f, ", ")?;
+                }
+                node.fmt(f)?;
+                inner_has_written = true;
+            }
+            write!(f, "]")?;
             has_written = true;
         }
         write!(f, "])")

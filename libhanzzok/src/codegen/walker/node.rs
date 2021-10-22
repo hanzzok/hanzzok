@@ -11,6 +11,7 @@ impl Walker<HanzzokAstNode> for Context<'_> {
             HanzzokAstNode::BlockConstructor(node) => self.walk(node),
             HanzzokAstNode::InlineObject(node) => self.walk(node),
             HanzzokAstNode::Newline(_) => {
+                // Should not add something.
                 vec![]
             }
         }
