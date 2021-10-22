@@ -68,38 +68,12 @@
     <main>
         <p>
             <div>
-<h1>hanzzok</h1><p>A small predictable markup language.</p><blockquote><p>To the big site while turning over a page.</p><p>한 쪽씩 넘기며 한(큰) 쪽으로.</p></blockquote><p>Goals:</p><ul><li>Make the language predictable</li><li>Have a small ruleset</li><li>Make documents store contents instead of styles</li><li>Make components creation and adoption easy</li><li>Make documents platform-agnostic</li><li>Make tool integration easy and rich</li></ul><p>Not a Goals:</p><ul><li>Complicated powerful typesetting system (like LaTeX) : We aren&#x27;t making a paper book.</li><li>Concise stackable emphasize syntax (like Markdown) : We wish to write more instead decorate.</li></ul><p>Remaining Questions:</p><ul><li>How to integrate a complex syntax like a table or a sublist? -&gt; Thinking of indentation and dedentation syntax, and a syntax just for the table.</li></ul><h2>Atoms</h2><h3>Block Constructor</h3><h4>Basic Form</h4><div data-language="hanzzok" class="code-block">&quot;|&quot; &lt;name&gt; &lt;inline object&gt;* &lt;param&gt;
-</div><p>Example:</p><div class="code-block" data-language="hanzzok">| youtube q2QfH1JqtkY { width: 100%, height: auto }
-</div><h4>Shortened Form</h4><div class="code-block" data-language="hanzzok">&lt;name-composed-of-special-characters&gt; &lt;inline object&gt;* &lt;param&gt;
-</div><p>Example:</p><div class="code-block" data-language="hanzzok"># Heading { id: &quot;another-anchor&quot; }
-
-&#x2f;&#x2f; You can pass
-   a multiline inline objects
-   to the block constructor
-   may the plugin warn about it.
-</div><h4>Bookend Form</h4><div data-language="hanzzok" class="code-block">&lt;name-composed-of-special-characters&gt; &lt;inline object&gt;* &lt;param&gt; &lt;newline&gt;
-&lt;raw text&gt;
-&lt;name-composed-of-special-characters&gt;
-</div><p>Example:</p><div data-language="hanzzok" class="code-block">``` hanzzok { highlight = [1, 3] }
-\``` hanzzok
-Hello, world!
-\```
-```
-$$
-a^2+b^2=c^2
-$$
-</div><h4>Leading Form</h4><div class="code-block" data-language="hanzzok">&lt;name-composed-of-special-characters&gt; &lt;inline object&gt;*
-&lt;name-composed-of-special-characters&gt; &lt;inline object&gt;*
-...
-</div><p>Example:</p><div class="code-block" data-language="hanzzok">&gt; &quot;Was it a cat I saw?&quot;
-&gt;
-&gt; Well, probably not.
-</div><h3>Inline Object</h3><h4>Inline Constructor</h4><p>Must be used in the decorator chain.</p><div data-language="hanzzok" class="code-block">&quot;#&quot; &lt;space&gt; &lt;name&gt; ( &quot;(&quot; &lt;params&gt;+ &quot;)&quot; )?
-</div><p>Example:</p><div class="code-block" data-language="hanzzok">[#image(&quot;.&#x2f;images&#x2f;test.png&quot;) .width(100%) .height(auto)]
-</div><h4>Decorator Chain</h4><div data-language="hanzzok" class="code-block">&quot;[&quot; &lt;inline object&gt; (&quot;.&quot; &lt;name&gt; (&quot;(&quot; &lt;params&gt;+ &quot;)&quot;)?)* &quot;]&quot;
-</div><p>Example:</p><div data-language="hanzzok" class="code-block">[Hello .italic] [world! .bold .italic(true)]
-</div><p>
-</p>
+<h1>Registered Plugins</h1><ul><li>code</li><li>heading</li><li>list</li><li>math</li><li>quotation</li></ul><h2>code_plugin()</h2><h3>Code Block Constructor</h3><p>Example:</p><div class="code-block" data-language="javascript">fetch(&#x27;example.com&#x27;)
+    .then(res =&gt; res.json())
+    .then(res =&gt; console.log(res));
+</div><h2>heading_plugin()</h2><h3>1~6 Level Heading Block Constructor</h3><p>Example:</p><h5>It&#x27;s h5 heading!</h5><p>
+</p><h6>It&#x27;s h6 heading!</h6><h2>list_plugin()</h2><h3>List Block Constructor</h3><p>Example:</p><ul><li>It&#x27;s a list</li><li>Another Entry</li></ul><h2>math_plugin()</h2><h3>Math Block Constructor</h3><p>Example:</p><div class="math-block">\sum\limits_{x=0}^{\infty} \frac{1}{x^2}
+</div><h2>quotation_plugin()</h2><h3>Blockquote Block Constructor</h3><p>Example:</p><blockquote><p>&quot;Was it a cat I saw?&quot;</p><p>Well, probably not.</p></blockquote>
             </div>
         </p>
     </main>

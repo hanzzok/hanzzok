@@ -1,0 +1,57 @@
+# Registered Plugins
+
+- code
+- heading
+- list
+- math
+- quotation
+
+## code_plugin()
+
+### Code Block Constructor
+
+Example:
+
+``` javascript
+fetch('example.com')
+    .then(res => res.json())
+    .then(res => console.log(res));
+```
+
+## heading_plugin()
+
+### 1~6 Level Heading Block Constructor
+
+Example:
+
+##### It's h5 heading!
+###### It's h6 heading!
+
+## list_plugin()
+
+### List Block Constructor
+
+Example:
+
+- It's a list
+- Another Entry
+
+## math_plugin()
+
+### Math Block Constructor
+
+Example:
+
+$$
+\sum\limits_{x=0}^{\infty} \frac{1}{x^2}
+$$
+
+## quotation_plugin()
+
+### Blockquote Block Constructor
+
+Example:
+
+> "Was it a cat I saw?"
+>
+> Well, probably not.

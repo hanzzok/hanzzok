@@ -15,6 +15,10 @@ impl BlockConstructorRule for MathBlockConstructorRule {
         BlockConstructorForm::Bookend
     }
 
+    fn accept_raw_multiline(&self) -> bool {
+        true
+    }
+
     fn apply(
         &self,
         context: &Context,

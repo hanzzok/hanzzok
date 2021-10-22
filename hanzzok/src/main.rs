@@ -7,7 +7,7 @@ use libhanzzok::{
 };
 
 fn main() -> eyre::Result<()> {
-    let source = include_str!("../../README.hz");
+    let source = include_str!("../../Showcase.hz");
 
     let compiler = Compiler::new()
         .with(heading_plugin())
