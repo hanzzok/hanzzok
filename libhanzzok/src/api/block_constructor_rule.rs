@@ -1,5 +1,5 @@
 use crate::{
-    codegen::HtmlNode,
+    codegen::{Context, HtmlNode},
     core::ast::{BlockConstructorForm, InlineObjectNode},
 };
 
@@ -10,6 +10,7 @@ pub trait BlockConstructorRule {
 
     fn apply(
         &self,
+        context: &Context,
         main_text: Vec<InlineObjectNode>,
         param: Option<String>,
         multiline_text: Vec<InlineObjectNode>,

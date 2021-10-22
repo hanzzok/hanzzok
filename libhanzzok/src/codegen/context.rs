@@ -1,33 +1,22 @@
-use std::{
-    collections::VecDeque,
-    io::{self, Write},
-};
+use crate::core::Compiler;
 
-use super::html::HtmlNode;
-
-pub struct Context {
-    children: VecDeque<HtmlNode>,
+pub struct Context<'a> {
+    pub(crate) compiler: &'a Compiler,
+    pub(crate) is_in_container: bool,
 }
 
-impl Context {
-    pub fn new() -> Self {
+impl<'a> Context<'a> {
+    pub fn new(compiler: &'a Compiler) -> Self {
         Context {
-            children: VecDeque::new(),
+            compiler,
+            is_in_container: false,
         }
     }
 
-    pub fn push(&mut self, node: HtmlNode) {
-        self.children.push_back(node)
-    }
-
-    pub fn pop(&mut self) -> Option<HtmlNode> {
-        self.children.pop_back()
-    }
-
-    pub fn write(&self, w: &mut impl Write) -> io::Result<()> {
-        for node in &self.children {
-            node.write(w)?;
+    pub fn in_container(&self) -> Self {
+        Context {
+            compiler: self.compiler,
+            is_in_container: true,
         }
-        Ok(())
     }
 }

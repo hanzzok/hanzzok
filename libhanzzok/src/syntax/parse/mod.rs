@@ -7,7 +7,10 @@ use nom::{
 };
 
 use crate::{
-    core::ast::{BlockConstructorForm, HanzzokAstNode, InlineObjectNode},
+    core::{
+        ast::{BlockConstructorForm, HanzzokAstNode, InlineObjectNode},
+        Compiler,
+    },
     syntax::parse::{nom_ext::HanzzokParser, parse_inline_object::parse_inline_object},
 };
 
@@ -26,16 +29,14 @@ mod parse_text;
 type Error = nom::error::Error<HanzzokParser>;
 type ParseResult<T> = nom::IResult<HanzzokParser, T, Error>;
 
-pub fn parse_root(tokens: Vec<Token>) -> Vec<HanzzokAstNode> {
+pub fn parse_root(tokens: Vec<Token>, compiler: &Compiler) -> Vec<HanzzokAstNode> {
     let p = HanzzokParser::new(tokens, {
         let mut map = HashMap::new();
 
-        map.insert("#".to_string(), BlockConstructorForm::Shortened);
-        map.insert("##".to_string(), BlockConstructorForm::Shortened);
-        map.insert("###".to_string(), BlockConstructorForm::Shortened);
-        map.insert("####".to_string(), BlockConstructorForm::Shortened);
-        map.insert("#####".to_string(), BlockConstructorForm::Shortened);
-        map.insert("######".to_string(), BlockConstructorForm::Shortened);
+        for (key, rule) in &compiler.block_constructor_rules {
+            map.insert(key.clone(), rule.form());
+        }
+
         map.insert(">".to_string(), BlockConstructorForm::Leading);
 
         map

@@ -1,15 +1,16 @@
-use std::{
-    fs::File,
-    io::{stdout, Write},
-};
+use std::{fs::File, io::Write};
 
 use libhanzzok::{
     codegen::compile_html,
+    core::{heading_plugin, Compiler},
     syntax::{parse_root, HanzzokTokenizer},
 };
 
 fn main() -> eyre::Result<()> {
     let source = include_str!("../../README.hz");
+
+    let compiler = Compiler::new().with(heading_plugin());
+
     let tokenizer = HanzzokTokenizer::from_source(source);
     let tokens: Vec<_> = tokenizer.collect();
     /*
@@ -17,7 +18,7 @@ fn main() -> eyre::Result<()> {
         println!("{}", token);
     }
     */
-    let nodes = parse_root(tokens);
+    let nodes = parse_root(tokens, &compiler);
     for node in &nodes {
         println!("{}", node);
     }
@@ -25,7 +26,7 @@ fn main() -> eyre::Result<()> {
     write!(
         &mut f,
         r#"
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -41,7 +42,7 @@ fn main() -> eyre::Result<()> {
             font-size: 1.25em;
         }}
         h1,h2,h3,h4,h5,h6 {{
-            margin: 3em 0 1em;
+            margin: 0.5rem 0;
         }}
         p,ul,ol {{
             margin-bottom: 1em;
@@ -57,7 +58,7 @@ fn main() -> eyre::Result<()> {
             <div>
 "#
     )?;
-    compile_html(&nodes, &mut f)?;
+    compile_html(&nodes, &compiler, &mut f)?;
     write!(
         &mut f,
         r#"

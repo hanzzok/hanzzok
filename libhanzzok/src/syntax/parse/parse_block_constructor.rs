@@ -49,7 +49,9 @@ fn parse_block_constructor_params(p: HanzzokParser) -> ParseResult<Vec<Token>> {
 }
 
 pub fn parse_block_constructor_basic(p: HanzzokParser) -> ParseResult<BlockConstructorNode> {
-    let (p, vertical_bar) = tag(TokenKind::PunctuationVerticalBar)(p)?;
+    let tt = p.create_tracker();
+
+    let (p, _) = tag(TokenKind::PunctuationVerticalBar)(p)?;
 
     let (p, _) = skip_horizontal_spaces(p)?;
 
@@ -79,11 +81,7 @@ pub fn parse_block_constructor_basic(p: HanzzokParser) -> ParseResult<BlockConst
 
     let multiline_text = Vec::new();
 
-    let maintext_last_span = main_text.last().map(|node| node.span());
-    let last_span = param
-        .map(|(_, s)| s)
-        .or(maintext_last_span.as_ref())
-        .unwrap_or(&name.0.span);
+    let tokens = tt.end(&p);
 
     Ok((
         p,
@@ -93,12 +91,14 @@ pub fn parse_block_constructor_basic(p: HanzzokParser) -> ParseResult<BlockConst
             main_text,
             param: param.map(|(s, _)| s.clone()),
             multiline_text,
-            span: vertical_bar.span.joined(last_span),
+            tokens,
         },
     ))
 }
 
 pub fn parse_block_constructor_shortened(p: HanzzokParser) -> ParseResult<BlockConstructorNode> {
+    let tt = p.create_tracker();
+
     let (p, name) = match p
         .block_constructors
         .get(&BlockConstructorForm::Shortened)
@@ -110,7 +110,6 @@ pub fn parse_block_constructor_shortened(p: HanzzokParser) -> ParseResult<BlockC
         Some(v) => v,
         None => return fail(p),
     };
-    let name_span = name[0].span.joined_opt(name.last());
     let name: String = name.iter().map(|t| t.text.clone()).collect();
 
     let (p, _) = skip_horizontal_spaces(p)?;
@@ -134,11 +133,7 @@ pub fn parse_block_constructor_shortened(p: HanzzokParser) -> ParseResult<BlockC
 
     let multiline_text = Vec::new();
 
-    let maintext_last_span = main_text.last().map(|node| node.span());
-    let last_span = param
-        .map(|(_, s)| s)
-        .or(maintext_last_span.as_ref())
-        .unwrap_or(&name_span);
+    let tokens = tt.end(&p);
 
     Ok((
         p,
@@ -148,7 +143,7 @@ pub fn parse_block_constructor_shortened(p: HanzzokParser) -> ParseResult<BlockC
             main_text,
             param: param.map(|(s, _)| s.clone()),
             multiline_text,
-            span: name_span.joined(last_span),
+            tokens,
         },
     ))
 }

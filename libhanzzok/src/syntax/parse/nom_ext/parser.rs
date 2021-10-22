@@ -22,6 +22,26 @@ pub struct HanzzokParser {
     pub(crate) tokens: Vec<Token>,
 }
 
+impl HanzzokParser {
+    pub fn create_tracker(&self) -> HanzzokParserTracker {
+        HanzzokParserTracker {
+            start_offset: self.offset,
+            tokens: self.tokens.clone(),
+        }
+    }
+}
+
+pub struct HanzzokParserTracker {
+    start_offset: usize,
+    tokens: Vec<Token>,
+}
+
+impl HanzzokParserTracker {
+    pub fn end(self, parser: &HanzzokParser) -> Vec<Token> {
+        self.tokens[..(parser.offset - self.start_offset)].to_vec()
+    }
+}
+
 #[derive(Clone, Debug)]
 pub(crate) struct BlockConstructorNameParser {
     kinds: Vec<TokenKind>,

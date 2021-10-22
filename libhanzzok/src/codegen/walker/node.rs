@@ -1,18 +1,18 @@
 use crate::{
-    codegen::{context::Context, html::HtmlNode},
+    codegen::{context::Context, HtmlNode},
     core::ast::HanzzokAstNode,
 };
 
 use super::Walker;
 
-impl Walker<HanzzokAstNode> for Context {
-    fn walk(&mut self, node: HanzzokAstNode) {
+impl Walker<HanzzokAstNode> for Context<'_> {
+    fn walk(&self, node: HanzzokAstNode) -> Vec<HtmlNode> {
         match node {
-            HanzzokAstNode::BlockConstructor(_) => {
-                // TODO
-            }
+            HanzzokAstNode::BlockConstructor(node) => self.walk(node),
             HanzzokAstNode::InlineObject(node) => self.walk(node),
-            HanzzokAstNode::Newline(_) => {}
+            HanzzokAstNode::Newline(_) => {
+                vec![]
+            }
         }
     }
 }

@@ -1,6 +1,6 @@
 use core::fmt;
 
-use crate::core::Span;
+use crate::syntax::Token;
 
 use super::InlineObjectNode;
 
@@ -19,7 +19,7 @@ pub struct BlockConstructorNode {
     pub main_text: Vec<InlineObjectNode>,
     pub param: Option<String>,
     pub multiline_text: Vec<InlineObjectNode>,
-    pub span: Span,
+    pub tokens: Vec<Token>,
 }
 
 impl fmt::Display for BlockConstructorNode {

@@ -1,5 +1,5 @@
 
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -15,7 +15,7 @@
             font-size: 1.25em;
         }
         h1,h2,h3,h4,h5,h6 {
-            margin: 3em 0 1em;
+            margin:  0.5rem 0;
         }
         p,ul,ol {
             margin-bottom: 1em;
@@ -29,7 +29,7 @@
     <main>
         <p>
             <div>
-<p>A small predictable markup language.</p><p>> To the big site while turning over a page.
+<h1>hanzzok</h1><p>A small predictable markup language.</p><p>> To the big site while turning over a page.
 > 
 > 한 쪽씩 넘기며 한(큰) 쪽으로.</p><p>Goals:</p><p>- Make the language predictable
 - Have a small ruleset
@@ -37,18 +37,18 @@
 - Make components creation and adoption easy
 - Make documents platform-agnostic
 - Make tool integration easy and rich</p><p>Not a Goals:</p><p>- Complicated powerful typesetting system (like LaTeX) : We aren't making a paper book.
-- Concise stackable emphasize syntax (like Markdown) : We wish to write more instead decorate.</p><p>Remaining Questions:</p><p>- How to integrate a complex syntax like a table or a sublist? -> Thinking of indentation and dedentation syntax, and a syntax just for the table.</p><p>``` hanzzok
+- Concise stackable emphasize syntax (like Markdown) : We wish to write more instead decorate.</p><p>Remaining Questions:</p><p>- How to integrate a complex syntax like a table or a sublist? -> Thinking of indentation and dedentation syntax, and a syntax just for the table.</p><h2>Atoms</h2><h3>Block Constructor</h3><h4>Basic Form</h4><p>``` hanzzok
 "|" <name> <inline object>* <param>
 ```</p><p>Example:</p><p>``` hanzzok
 | youtube q2QfH1JqtkY { width: 100%, height: auto }
-```</p><p>``` hanzzok
+```</p><h4>Shortened Form</h4><p>``` hanzzok
 <name-composed-of-special-characters> <inline object>* <param>
 ```</p><p>Example:</p><p>``` hanzzok
 # Heading { id: "another-anchor" }</p><p>// You can pass
    a multiline inline objects
    to the block constructor
    may the plugin warn about it.
-```</p><p>``` hanzzok
+```</p><h4>Bookend Form</h4><p>``` hanzzok
 <name-composed-of-special-characters> <inline object>* <param> <newline>
 <raw text>
 <name-composed-of-special-characters>
@@ -58,7 +58,7 @@
 Hello, world!
 \```
 ```
-```</p><p>``` hanzzok
+```</p><h4>Leading Form</h4><p>``` hanzzok
 <name-composed-of-special-characters> <inline object>*
 <name-composed-of-special-characters> <inline object>*
 ...
@@ -66,11 +66,11 @@ Hello, world!
 > "Was it a cat I saw?"
 >
 > Well, probably not.
-```</p><p>Must be used in the decorator chain.</p><p>``` hanzzok
+```</p><h3>Inline Object</h3><h4>Inline Constructor</h4><p>Must be used in the decorator chain.</p><p>``` hanzzok
 "#" <space> <name> ( "(" <params>+ ")" )?
 ```</p><p>Example:</p><p>``` hanzzok
 [#image("./images/test.png") .width(100%) .height(auto)]
-```</p><p>``` hanzzok
+```</p><h4>Decorator Chain</h4><p>``` hanzzok
 "[" <inline object> ("." <name> ("(" <params>+ ")")?)* "]"
 ```</p><p>Example:</p><p>``` hanzzok
 </p><p> </p><p>
