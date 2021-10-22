@@ -1,11 +1,11 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, rc::Rc};
 
 use crate::api::BlockConstructorRule;
 
 use super::Plugin;
 
 pub struct Compiler {
-    pub(crate) block_constructor_rules: HashMap<String, Box<dyn BlockConstructorRule>>,
+    pub(crate) block_constructor_rules: HashMap<String, Rc<dyn BlockConstructorRule>>,
 }
 
 impl Compiler {

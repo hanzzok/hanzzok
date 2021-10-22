@@ -1,19 +1,28 @@
 use core::fmt;
 
-use crate::core::{Span, Spanned};
+use crate::{
+    core::{Span, Spanned},
+    syntax::Token,
+};
 
-use super::InlineObjectNode;
+use super::{InlineObjectNode, Raw};
 
 #[derive(Clone, Debug)]
 pub struct DecoratorChainNode {
-    pub span: Span,
     pub main_text: Box<InlineObjectNode>,
     pub decorators: Vec<DecoratorNode>,
+    pub tokens: Vec<Token>,
 }
 
 impl Spanned for DecoratorChainNode {
     fn span(&self) -> Span {
-        self.span.clone()
+        self.tokens.span()
+    }
+}
+
+impl Raw for DecoratorChainNode {
+    fn raw(&self) -> Vec<Token> {
+        self.tokens.clone()
     }
 }
 

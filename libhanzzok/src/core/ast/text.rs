@@ -5,6 +5,8 @@ use crate::{
     syntax::Token,
 };
 
+use super::Raw;
+
 #[derive(Clone, Debug)]
 pub struct TextNode {
     pub tokens: Vec<(Token, bool)>,
@@ -15,6 +17,15 @@ impl TextNode {
         TextNode {
             tokens: [self.tokens.clone(), other.tokens.clone()].concat(),
         }
+    }
+}
+
+impl Raw for TextNode {
+    fn raw(&self) -> Vec<Token> {
+        self.tokens
+            .iter()
+            .filter_map(|(token, show)| if *show { Some(token.clone()) } else { None })
+            .collect()
     }
 }
 

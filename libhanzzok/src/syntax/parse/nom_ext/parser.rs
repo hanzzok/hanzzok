@@ -2,22 +2,31 @@ use std::{
     collections::HashMap,
     iter::Enumerate,
     ops::{RangeFrom, RangeTo},
+    rc::Rc,
     vec::IntoIter,
 };
 
-use nom::{InputIter, InputLength, InputTake, Needed, Offset, Slice};
+use nom::{
+    branch::alt,
+    combinator::{fail, opt},
+    InputIter, InputLength, InputTake, Needed, Offset, Slice,
+};
 use tokenize::HanzzokTokenizer;
 
 use crate::{
+    api::BlockConstructorRule,
     core::ast::BlockConstructorForm,
     syntax::{parse::ParseResult, tokenize, Token, TokenKind},
 };
 
-use super::satisfy;
+use super::{satisfy, tag};
 
-#[derive(Clone, Debug)]
+#[derive(Clone)]
 pub struct HanzzokParser {
-    pub(crate) block_constructors: HashMap<BlockConstructorForm, Vec<BlockConstructorNameParser>>,
+    pub(crate) block_constructors: HashMap<
+        BlockConstructorForm,
+        Vec<(BlockConstructorNameParser, Rc<dyn BlockConstructorRule>)>,
+    >,
     pub(crate) offset: usize,
     pub(crate) tokens: Vec<Token>,
 }
@@ -58,6 +67,26 @@ impl BlockConstructorNameParser {
             tokens.push(res.1);
         }
 
+        let (p, v) = opt(satisfy(|t| {
+            matches!(
+                t.kind,
+                TokenKind::PunctuationNumberSign
+                    | TokenKind::PunctuationLeftParenthesis
+                    | TokenKind::PunctuationRightParenthesis
+                    | TokenKind::PunctuationFullStop
+                    | TokenKind::PunctuationReverseSolidus
+                    | TokenKind::PunctuationLeftSquareBracket
+                    | TokenKind::PunctuationRightSquareBracket
+                    | TokenKind::PunctuationLeftCurlyBracket
+                    | TokenKind::PunctuationVerticalBar
+                    | TokenKind::PunctuationRightCurlyBracket
+                    | TokenKind::PunctuationsOther(_)
+            )
+        }))(p)?;
+        if v.is_some() {
+            return fail(p);
+        }
+
         Ok((p, tokens))
     }
 }
@@ -65,20 +94,23 @@ impl BlockConstructorNameParser {
 impl HanzzokParser {
     pub fn new(
         tokens: Vec<Token>,
-        block_constructors: HashMap<String, BlockConstructorForm>,
+        block_constructors: &HashMap<String, Rc<dyn BlockConstructorRule>>,
     ) -> Self {
         HanzzokParser {
             block_constructors: {
                 let mut map = HashMap::new();
 
-                for (name, form) in &block_constructors {
-                    let group = map.entry(form.clone()).or_insert(Vec::new());
-                    group.push(BlockConstructorNameParser {
-                        name: name.clone(),
-                        kinds: HanzzokTokenizer::from_source(name.as_ref())
-                            .map(|token| token.kind)
-                            .collect(),
-                    })
+                for (name, rule) in block_constructors {
+                    let group = map.entry(rule.form()).or_insert(Vec::new());
+                    group.push((
+                        BlockConstructorNameParser {
+                            name: name.clone(),
+                            kinds: HanzzokTokenizer::from_source(name.as_ref())
+                                .map(|token| token.kind)
+                                .collect(),
+                        },
+                        rule.clone(),
+                    ))
                 }
 
                 map

@@ -5,12 +5,21 @@ use nom::{
     combinator::{fail, map, not, opt},
     multi::many0,
     sequence::{preceded, tuple},
+    InputIter,
 };
 
-use crate::core::Spanned;
 use crate::{
-    core::ast::{BlockConstructorForm, BlockConstructorNode, InlineObjectNode},
-    syntax::{parse::nom_ext::any, Token, TokenKind},
+    core::ast::{
+        BlockConstructorForm, BlockConstructorNode, InlineConstructorNode, InlineObjectNode,
+        TextNode,
+    },
+    syntax::{
+        parse::{
+            nom_ext::{any, skip_vertical_spaces},
+            parse_text::parse_single_newline,
+        },
+        Token, TokenKind,
+    },
 };
 
 use super::{
@@ -26,6 +35,7 @@ pub fn parse_block_constructor(p: HanzzokParser) -> ParseResult<BlockConstructor
     alt((
         parse_block_constructor_basic,
         parse_block_constructor_leading,
+        parse_block_constructor_bookend,
         parse_block_constructor_shortened,
     ))(p)
 }
@@ -106,7 +116,7 @@ pub fn parse_block_constructor_shortened(p: HanzzokParser) -> ParseResult<BlockC
         .get(&BlockConstructorForm::Shortened)
         .into_iter()
         .flatten()
-        .filter_map(|parser| parser.parse(p.clone()).ok())
+        .filter_map(|(parser, _)| parser.parse(p.clone()).ok())
         .max_by_key(|(_, t)| t.len())
     {
         Some(v) => v,
@@ -156,7 +166,7 @@ fn parse_block_constructor_leading(p: HanzzokParser) -> ParseResult<BlockConstru
         .get(&BlockConstructorForm::Leading)
         .into_iter()
         .flatten()
-        .filter_map(|parser| parser.parse(p.clone()).ok().map(|(_, t)| (parser, t)))
+        .filter_map(|(parser, _)| parser.parse(p.clone()).ok().map(|(_, t)| (parser, t)))
         .max_by_key(|(_, t)| t.len())
     {
         Some(v) => v,
@@ -201,5 +211,99 @@ fn parse_block_constructor_leading_base(
     Ok((
         p,
         once(main_text).chain(next.into_iter().flatten()).collect(),
+    ))
+}
+
+fn parse_block_constructor_bookend(p: HanzzokParser) -> ParseResult<BlockConstructorNode> {
+    let tt = p.create_tracker();
+
+    let (parser, block_constructor, _) = match p
+        .block_constructors
+        .get(&BlockConstructorForm::Bookend)
+        .into_iter()
+        .flatten()
+        .filter_map(|(parser, block_constructor)| {
+            parser
+                .parse(p.clone())
+                .ok()
+                .map(|(_, t)| (parser, block_constructor, t))
+        })
+        .max_by_key(|(_, _, t)| t.len())
+    {
+        Some(v) => v,
+        None => return fail(p),
+    };
+    let accept_raw_multiline = block_constructor.accept_raw_multiline();
+    let parser = parser.clone();
+
+    let (p, _) = parser.parse(p)?;
+
+    let (p, _) = skip_horizontal_spaces(p)?;
+
+    let (p, main_text) = many0(preceded(
+        not(alt((
+            tag(TokenKind::PunctuationLeftCurlyBracket),
+            tag(TokenKind::VerticalSpace),
+        ))),
+        parse_inline_object,
+    ))(p)?;
+
+    let (p, param) = opt(map(parse_block_constructor_params, |params| {
+        let collected: Vec<_> = params.iter().map(|t| t.text.as_ref()).collect::<Vec<_>>();
+        (
+            collected.clone().join(""),
+            params[0].span.joined_opt(params.last()),
+        )
+    }))(p)?;
+    let param = param.as_ref();
+
+    let (p, _) = skip_vertical_spaces(p)?;
+
+    let (p, multiline_text): (HanzzokParser, Vec<InlineObjectNode>) = if accept_raw_multiline {
+        let (p, tokens) = many0(preceded(
+            not(|p| parser.parse(p)),
+            alt((
+                map(
+                    tuple((tag(TokenKind::PunctuationReverseSolidus), |p| {
+                        parser.parse(p)
+                    })),
+                    |(l, r)| [vec![l], r].concat(),
+                ),
+                map(any, |t| vec![t]),
+            )),
+        ))(p)?;
+
+        (
+            p,
+            vec![InlineObjectNode::Text(TextNode {
+                tokens: tokens.iter().flatten().map(|t| (t.clone(), true)).collect(),
+            })],
+        )
+    } else {
+        many0(preceded(
+            not(|p| parser.parse(p)),
+            alt((
+                parse_inline_object,
+                map(parse_single_newline, InlineObjectNode::Text),
+            )),
+        ))(p)?
+    };
+
+    let (p, _) = skip_any_spaces(p)?;
+
+    let (p, _) = parser.parse(p)?;
+
+    let tokens = tt.end(&p);
+
+    Ok((
+        p,
+        BlockConstructorNode {
+            form: BlockConstructorForm::Bookend,
+            name: parser.name,
+            main_text,
+            param: param.map(|(s, _)| s.clone()),
+            multiline_text: vec![multiline_text],
+            tokens,
+        },
     ))
 }

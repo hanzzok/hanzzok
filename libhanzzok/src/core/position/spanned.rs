@@ -12,6 +12,12 @@ impl<T: Spanned> Spanned for &T {
     }
 }
 
+impl<T: Spanned> Spanned for Vec<T> {
+    fn span(&self) -> Span {
+        self[0].span().joined_opt(self.last())
+    }
+}
+
 pub trait DisplayWithSpan {
     fn fmt_with_span(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result;
 }

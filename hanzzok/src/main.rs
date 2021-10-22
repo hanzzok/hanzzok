@@ -2,7 +2,7 @@ use std::{fs::File, io::Write};
 
 use libhanzzok::{
     codegen::compile_html,
-    core::{heading_plugin, list_plugin, quotation_plugin, Compiler},
+    core::{code_plugin, heading_plugin, list_plugin, math_plugin, quotation_plugin, Compiler},
     syntax::{parse_root, HanzzokTokenizer},
 };
 
@@ -12,7 +12,9 @@ fn main() -> eyre::Result<()> {
     let compiler = Compiler::new()
         .with(heading_plugin())
         .with(quotation_plugin())
-        .with(list_plugin());
+        .with(list_plugin())
+        .with(math_plugin())
+        .with(code_plugin());
 
     let tokenizer = HanzzokTokenizer::from_source(source);
     let tokens: Vec<_> = tokenizer.collect();
@@ -60,7 +62,38 @@ fn main() -> eyre::Result<()> {
             background: #e2e2e2;
             padding-left: 1em;
         }}
+        .code-block > pre {{
+            padding: 0.5rem;
+        }}
     </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.18/dist/katex.min.css" integrity="sha384-zTROYFVGOfTw7JV7KUu8udsvW2fx4lWOsCEDqhBreBwlHI4ioVRtmIvEThzJHGET" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.18/dist/katex.min.js" integrity="sha384-GxNFqL3r9uRJQhR+47eDxuPoNE7yLftQM8LcxzgS4HT73tp970WS/wV5p8UzCOmb" crossorigin="anonymous"></script>
+    <script src='https://unpkg.com/shiki'></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {{
+            for (const element of document.getElementsByClassName('math-block')) {{
+                katex.render(element.textContent, element, {{
+                    throwOnError: false
+                }});
+            }}
+            shiki
+            .getHighlighter({{
+                theme: 'nord'
+            }})
+            .then(highlighter => {{
+                for (const element of document.getElementsByClassName('code-block')) {{
+                    let code;
+                    try {{
+                        code = highlighter.codeToHtml(element.textContent, element.dataset['language']);
+                    }} catch {{
+                        code = highlighter.codeToHtml(element.textContent, 'text');
+                    }}
+                    element.innerHTML = code;
+                    
+                }}
+            }});
+        }});
+    </script>
 </head>
 
 <body>

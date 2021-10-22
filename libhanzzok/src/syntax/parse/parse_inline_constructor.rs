@@ -9,18 +9,15 @@ use super::{
 };
 
 pub fn parse_inline_constructor(p: HanzzokParser) -> ParseResult<InlineConstructorNode> {
-    let (p, number_sign) = tag(TokenKind::PunctuationNumberSign)(p)?;
+    let tt = p.create_tracker();
+    let (p, _) = tag(TokenKind::PunctuationNumberSign)(p)?;
 
-    let (p, (name_token, name)) = satisfy_transform(|t| match &t.kind {
+    let (p, (_, name)) = satisfy_transform(|t| match &t.kind {
         TokenKind::Word(w) => Some(w.clone()),
         _ => None,
     })(p)?;
 
-    Ok((
-        p,
-        InlineConstructorNode {
-            span: number_sign.span.joined(&name_token.span),
-            name,
-        },
-    ))
+    let tokens = tt.end(&p);
+
+    Ok((p, InlineConstructorNode { name, tokens }))
 }

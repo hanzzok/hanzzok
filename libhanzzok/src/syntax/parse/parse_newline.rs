@@ -1,9 +1,6 @@
 use nom::{combinator::map, sequence::tuple};
 
-use crate::{
-    core::{ast::HanzzokAstNode, Spanned},
-    syntax::TokenKind,
-};
+use crate::{core::ast::HanzzokAstNode, syntax::TokenKind};
 
 use super::{
     nom_ext::{tag, HanzzokParser},
@@ -13,6 +10,6 @@ use super::{
 pub fn parse_newline(p: HanzzokParser) -> ParseResult<HanzzokAstNode> {
     map(
         tuple((tag(TokenKind::VerticalSpace), tag(TokenKind::VerticalSpace))),
-        |(l, r)| HanzzokAstNode::Newline(l.span().joined(&r.span())),
+        |(l, r)| HanzzokAstNode::Newline(vec![l, r]),
     )(p)
 }

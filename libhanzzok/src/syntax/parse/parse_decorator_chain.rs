@@ -40,7 +40,9 @@ fn parse_decorator_params(p: HanzzokParser) -> ParseResult<Vec<Token>> {
 }
 
 pub fn parse_decorator_chain(p: HanzzokParser) -> ParseResult<DecoratorChainNode> {
-    let (p, open) = tag(TokenKind::PunctuationLeftSquareBracket)(p)?;
+    let tt = p.create_tracker();
+
+    let (p, _) = tag(TokenKind::PunctuationLeftSquareBracket)(p)?;
 
     let (p, _) = skip_any_spaces(p)?;
 
@@ -103,14 +105,16 @@ pub fn parse_decorator_chain(p: HanzzokParser) -> ParseResult<DecoratorChainNode
         skip_any_spaces,
     ))(p)?;
 
-    let (p, close) = tag(TokenKind::PunctuationRightSquareBracket)(p)?;
+    let (p, _) = tag(TokenKind::PunctuationRightSquareBracket)(p)?;
+
+    let tokens = tt.end(&p);
 
     Ok((
         p,
         DecoratorChainNode {
             main_text: Box::new(main_text),
-            span: open.span.joined(&close.span),
             decorators,
+            tokens,
         },
     ))
 }

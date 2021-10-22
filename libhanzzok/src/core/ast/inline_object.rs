@@ -2,13 +2,23 @@ use core::fmt;
 
 use crate::core::{Span, Spanned};
 
-use super::{DecoratorChainNode, InlineConstructorNode, TextNode};
+use super::{DecoratorChainNode, InlineConstructorNode, Raw, TextNode};
 
 #[derive(Clone, Debug)]
 pub enum InlineObjectNode {
     DecoratorChain(DecoratorChainNode),
     InlineConstructor(InlineConstructorNode),
     Text(TextNode),
+}
+
+impl Raw for InlineObjectNode {
+    fn raw(&self) -> Vec<crate::syntax::Token> {
+        match self {
+            InlineObjectNode::DecoratorChain(node) => node.raw(),
+            InlineObjectNode::InlineConstructor(node) => node.raw(),
+            InlineObjectNode::Text(node) => node.raw(),
+        }
+    }
 }
 
 impl Spanned for InlineObjectNode {

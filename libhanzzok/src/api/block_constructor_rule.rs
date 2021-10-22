@@ -8,6 +8,10 @@ pub trait BlockConstructorRule {
 
     fn form(&self) -> BlockConstructorForm;
 
+    fn accept_raw_multiline(&self) -> bool {
+        false
+    }
+
     fn apply(
         &self,
         context: &Context,
