@@ -44,11 +44,24 @@ fn main() -> eyre::Result<()> {
     <title>Document</title>
     <style>
         html {{
-            max-width: 70ch;
+            max-width: 140ch;
             padding: 3em 1em;
             margin: auto;
             line-height: 1.75;
             font-size: 1.25em;
+        }}
+        main {{
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }}
+        .left, .right {{
+            max-width: 70ch;
+        }}
+        @media screen and (max-width: 140ch) {{
+            .left {{
+                display: none;
+            }}
         }}
         h1,h2,h3,h4,h5,h6 {{
             margin: 0.5rem 0;
@@ -57,6 +70,9 @@ fn main() -> eyre::Result<()> {
             margin-bottom: 1em;
             color: #1d1d1d;
             font-family: sans-serif;
+        }}
+        pre {{
+            font-size: inherit;
         }}
         blockquote {{
             margin: 0;
@@ -102,16 +118,22 @@ fn main() -> eyre::Result<()> {
 
 <body>
     <main>
-        <p>
-            <div>
+        <pre class="left">
+"#
+    )?;
+    write!(&mut f, "{}", source)?;
+    write!(
+        &mut f,
+        r#"
+        </pre>
+        <div class="right">
 "#
     )?;
     compile_html(&nodes, &compiler, &mut f)?;
     write!(
         &mut f,
         r#"
-            </div>
-        </p>
+        </div>
     </main>
 </body>
 
