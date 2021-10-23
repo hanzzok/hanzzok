@@ -52,7 +52,7 @@
     </style>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.18/dist/katex.min.css" integrity="sha384-zTROYFVGOfTw7JV7KUu8udsvW2fx4lWOsCEDqhBreBwlHI4ioVRtmIvEThzJHGET" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.18/dist/katex.min.js" integrity="sha384-GxNFqL3r9uRJQhR+47eDxuPoNE7yLftQM8LcxzgS4HT73tp970WS/wV5p8UzCOmb" crossorigin="anonymous"></script>
-    <script src='https://unpkg.com/shiki'></script>
+    <script defer src='https://unpkg.com/shiki'></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             for (const element of document.getElementsByClassName('math-block')) {
@@ -62,7 +62,8 @@
             }
             shiki
             .getHighlighter({
-                theme: 'nord'
+                theme: 'nord',
+                langs: ['javascript']
             })
             .then(highlighter => {
                 for (const element of document.getElementsByClassName('code-block')) {
@@ -165,7 +166,7 @@ You can [combine .bold .italic] [together .bold .underline].
     .then(res =&gt; console.log(res));
 </div><h2>heading_plugin()</h2><h3>1~6 Level Heading Block Constructor</h3><p>Example:</p><h5>It&#x27;s h5 heading!</h5><p>
 </p><h6>It&#x27;s h6 heading!</h6><h2>list_plugin()</h2><h3>List Block Constructor</h3><p>Example:</p><ul><li>It&#x27;s a list</li><li>Another Entry</li></ul><h2>math_plugin()</h2><h3>Math Block Constructor</h3><p>Example:</p><div class="math-block">\sum\limits_{x=0}^{\infty} \frac{1}{x^2}
-</div><h2>quotation_plugin()</h2><h3>Blockquote Block Constructor</h3><p>Example:</p><blockquote><p>&quot;Was it a cat I saw?&quot;</p><p>Well, probably not.</p></blockquote><h2>youtube_plugin()</h2><h3>YouTube Embed Block Constructor</h3><p>Example:</p><iframe frameborder="0" width="560" height="315" allowfullscreen title="YouTube video player" src="https://www.youtube.com/embed/hOzbco2EcYQ" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"/><h2>emphasize_plugin()</h2><h3>Emphasize(bold, italic, underline, strikethrough) Decorators</h3><p><b>Bold</b>, <i>Italic</i>, <u>Underline</u>, <s>Strikethrough</s></p><p>You can <i><b>combine</b></i> <u><b>together</b></u>.</p>
+</div><h2>quotation_plugin()</h2><h3>Blockquote Block Constructor</h3><p>Example:</p><blockquote><p>&quot;Was it a cat I saw?&quot;</p><p>Well, probably not.</p></blockquote><h2>youtube_plugin()</h2><h3>YouTube Embed Block Constructor</h3><p>Example:</p><iframe frameborder="0" height="315" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" width="560" allowfullscreen src="https://www.youtube.com/embed/hOzbco2EcYQ" title="YouTube video player"/><h2>emphasize_plugin()</h2><h3>Emphasize(bold, italic, underline, strikethrough) Decorators</h3><p><b>Bold</b>, <i>Italic</i>, <u>Underline</u>, <s>Strikethrough</s></p><p>You can <i><b>combine</b></i> <u><b>together</b></u>.</p>
         </div>
     </main>
 </body>
