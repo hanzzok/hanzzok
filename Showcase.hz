@@ -5,6 +5,7 @@
 - list
 - math
 - quotation
+- youtube
 
 ## code_plugin()
 
@@ -55,3 +56,11 @@ Example:
 > "Was it a cat I saw?"
 >
 > Well, probably not.
+
+## youtube_plugin()
+
+### YouTube Embed Block Constructor
+
+Example:
+
+| youtube hOzbco2EcYQ

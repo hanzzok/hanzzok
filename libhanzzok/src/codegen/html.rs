@@ -85,7 +85,11 @@ impl HtmlTagNode {
     pub fn write(&self, w: &mut impl Write) -> io::Result<()> {
         write!(w, "<{}", &self.tag)?;
         for (key, value) in &self.attrs {
-            write!(w, " {}=\"{}\"", key, value)?;
+            if value.is_empty() {
+                write!(w, " {}", key)?;
+            } else {
+                write!(w, " {}=\"{}\"", key, value)?;
+            }
         }
         if self.children.len() > 0 {
             write!(w, ">")?;

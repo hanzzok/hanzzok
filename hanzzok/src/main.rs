@@ -2,7 +2,10 @@ use std::{fs::File, io::Write};
 
 use libhanzzok::{
     codegen::compile_html,
-    core::{code_plugin, heading_plugin, list_plugin, math_plugin, quotation_plugin, Compiler},
+    core::{
+        code_plugin, heading_plugin, list_plugin, math_plugin, quotation_plugin, youtube_plugin,
+        Compiler,
+    },
     syntax::{parse_root, HanzzokTokenizer},
 };
 
@@ -14,7 +17,8 @@ fn main() -> eyre::Result<()> {
         .with(quotation_plugin())
         .with(list_plugin())
         .with(math_plugin())
-        .with(code_plugin());
+        .with(code_plugin())
+        .with(youtube_plugin());
 
     let tokenizer = HanzzokTokenizer::from_source(source);
     let tokens: Vec<_> = tokenizer.collect();
