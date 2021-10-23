@@ -91,14 +91,10 @@ impl HtmlTagNode {
                 write!(w, " {}=\"{}\"", key, value)?;
             }
         }
-        if self.children.len() > 0 {
-            write!(w, ">")?;
-            for node in &self.children {
-                node.write(w)?;
-            }
-            write!(w, "</{}>", &self.tag)
-        } else {
-            write!(w, "/>")
+        write!(w, ">")?;
+        for node in &self.children {
+            node.write(w)?;
         }
+        write!(w, "</{}>", &self.tag)
     }
 }
