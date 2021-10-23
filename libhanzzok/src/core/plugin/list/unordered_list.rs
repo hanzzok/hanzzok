@@ -21,13 +21,13 @@ impl BlockConstructorRule for UnorderedListBlockConstructorRule {
         _: Vec<InlineObjectNode>,
         _: Option<String>,
         multiline_text: Vec<Vec<InlineObjectNode>>,
-    ) -> Option<crate::codegen::HtmlNode> {
-        Some(HtmlNode::create_tag(
+    ) -> HtmlNode {
+        HtmlNode::create_tag(
             "ul",
             &multiline_text
                 .iter()
                 .map(|line| HtmlNode::create_tag("li", &context.walk(line)))
                 .collect::<Vec<_>>(),
-        ))
+        )
     }
 }

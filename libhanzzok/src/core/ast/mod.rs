@@ -19,7 +19,7 @@ mod text;
 #[derive(Clone, Debug)]
 pub enum HanzzokAstNode {
     BlockConstructor(BlockConstructorNode),
-    InlineObject(InlineObjectNode),
+    InlineObjectBlock(Vec<InlineObjectNode>),
     Newline(Vec<Token>),
 }
 
@@ -27,18 +27,8 @@ impl Raw for HanzzokAstNode {
     fn raw(&self) -> Vec<Token> {
         match self {
             HanzzokAstNode::BlockConstructor(node) => node.tokens.clone(),
-            HanzzokAstNode::InlineObject(node) => node.raw(),
+            HanzzokAstNode::InlineObjectBlock(nodes) => nodes.raw(),
             HanzzokAstNode::Newline(tokens) => tokens.clone(),
-        }
-    }
-}
-
-impl fmt::Display for HanzzokAstNode {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            HanzzokAstNode::BlockConstructor(node) => node.fmt(f),
-            HanzzokAstNode::InlineObject(node) => node.fmt(f),
-            HanzzokAstNode::Newline(_) => write!(f, "Newline"),
         }
     }
 }

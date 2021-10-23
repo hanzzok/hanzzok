@@ -3,8 +3,8 @@ use std::{fs::File, io::Write};
 use libhanzzok::{
     codegen::compile_html,
     core::{
-        code_plugin, heading_plugin, list_plugin, math_plugin, quotation_plugin, youtube_plugin,
-        Compiler,
+        code_plugin, emphasize_plugin, heading_plugin, list_plugin, math_plugin, quotation_plugin,
+        youtube_plugin, Compiler,
     },
     syntax::{parse_root, HanzzokTokenizer},
 };
@@ -18,19 +18,12 @@ fn main() -> eyre::Result<()> {
         .with(list_plugin())
         .with(math_plugin())
         .with(code_plugin())
-        .with(youtube_plugin());
+        .with(youtube_plugin())
+        .with(emphasize_plugin());
 
     let tokenizer = HanzzokTokenizer::from_source(source);
     let tokens: Vec<_> = tokenizer.collect();
-    /*
-    for token in &tokens {
-        println!("{}", token);
-    }
-    */
     let nodes = parse_root(tokens, &compiler);
-    for node in &nodes {
-        println!("{}", node);
-    }
     let mut f = File::create("./output.html")?;
     write!(
         &mut f,
@@ -72,7 +65,7 @@ fn main() -> eyre::Result<()> {
             font-family: sans-serif;
         }}
         pre {{
-            font-size: inherit;
+            white-space: pre-wrap;
         }}
         blockquote {{
             margin: 0;

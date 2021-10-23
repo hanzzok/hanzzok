@@ -21,7 +21,7 @@ impl BlockConstructorRule for BlockquoteBlockConstructorRule {
         _: Vec<InlineObjectNode>,
         _: Option<String>,
         multiline_text: Vec<Vec<InlineObjectNode>>,
-    ) -> Option<crate::codegen::HtmlNode> {
+    ) -> HtmlNode {
         let mut lines = Vec::new();
 
         let mut previous = Vec::new();
@@ -41,6 +41,6 @@ impl BlockConstructorRule for BlockquoteBlockConstructorRule {
             lines.push(HtmlNode::create_tag("p", &context.walk(previous)));
         }
 
-        Some(HtmlNode::create_tag("blockquote", &lines))
+        HtmlNode::create_tag("blockquote", &lines)
     }
 }

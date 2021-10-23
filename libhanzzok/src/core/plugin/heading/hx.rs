@@ -23,10 +23,7 @@ impl BlockConstructorRule for HxBlockConstructorRule {
         main_text: Vec<InlineObjectNode>,
         _param: Option<String>,
         _: Vec<Vec<InlineObjectNode>>,
-    ) -> Option<crate::codegen::HtmlNode> {
-        Some(HtmlNode::create_tag(
-            format!("h{}", self.depth),
-            &context.walk(main_text),
-        ))
+    ) -> HtmlNode {
+        HtmlNode::create_tag(format!("h{}", self.depth), &context.walk(main_text))
     }
 }

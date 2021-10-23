@@ -28,7 +28,7 @@ impl BlockConstructorRule for CodeBlockConstructorRule {
         main_text: Vec<InlineObjectNode>,
         _: Option<String>,
         multiline_text: Vec<Vec<InlineObjectNode>>,
-    ) -> Option<crate::codegen::HtmlNode> {
+    ) -> HtmlNode {
         let mut source = String::new();
 
         let mut before = None;
@@ -61,20 +61,18 @@ impl BlockConstructorRule for CodeBlockConstructorRule {
             source.push_str(&t.text);
         }
 
-        Some(
-            HtmlNode::create_tag_builder("div")
-                .append(HtmlNode::create_text(escape(&source).to_string()))
-                .set_attr("class", "code-block")
-                .set_attr(
-                    "data-language",
-                    main_text
-                        .raw()
-                        .iter()
-                        .map(|t| t.text.clone())
-                        .collect::<Vec<_>>()
-                        .join(""),
-                )
-                .build(),
-        )
+        HtmlNode::create_tag_builder("div")
+            .append(HtmlNode::create_text(escape(&source).to_string()))
+            .set_attr("class", "code-block")
+            .set_attr(
+                "data-language",
+                main_text
+                    .raw()
+                    .iter()
+                    .map(|t| t.text.clone())
+                    .collect::<Vec<_>>()
+                    .join(""),
+            )
+            .build()
     }
 }

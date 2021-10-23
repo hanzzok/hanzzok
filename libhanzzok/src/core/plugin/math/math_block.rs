@@ -25,12 +25,10 @@ impl BlockConstructorRule for MathBlockConstructorRule {
         _: Vec<InlineObjectNode>,
         _: Option<String>,
         multiline_text: Vec<Vec<InlineObjectNode>>,
-    ) -> Option<crate::codegen::HtmlNode> {
-        Some(
-            HtmlNode::create_tag_builder("div")
-                .append_all(context.walk(multiline_text))
-                .set_attr("class", "math-block")
-                .build(),
-        )
+    ) -> HtmlNode {
+        HtmlNode::create_tag_builder("div")
+            .append_all(context.walk(multiline_text))
+            .set_attr("class", "math-block")
+            .build()
     }
 }

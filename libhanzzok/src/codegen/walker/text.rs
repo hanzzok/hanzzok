@@ -26,10 +26,6 @@ impl Walker<TextNode> for Context<'_> {
             )
             .to_string(),
         );
-        if self.is_in_container {
-            vec![text]
-        } else {
-            vec![HtmlNode::create_tag("p", &[text])]
-        }
+        vec![text]
     }
 }

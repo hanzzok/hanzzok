@@ -19,13 +19,6 @@ impl Walker<BlockConstructorNode> for Context<'_> {
                 )]
             }
         };
-        rule.apply(
-            &self.in_container(),
-            node.main_text,
-            node.param,
-            node.multiline_text,
-        )
-        .into_iter()
-        .collect()
+        vec![rule.apply(self, node.main_text, node.param, node.multiline_text)]
     }
 }

@@ -64,10 +64,28 @@ pub fn parse_decorator_chain(p: HanzzokParser) -> ParseResult<DecoratorChainNode
             ))),
             |nodes| {
                 InlineObjectNode::Text(TextNode {
-                    tokens: nodes
-                        .into_iter()
-                        .flat_map(|node| node.tokens.into_iter())
-                        .collect(),
+                    tokens: {
+                        let mut tokens: Vec<_> = nodes
+                            .into_iter()
+                            .flat_map(|node| node.tokens.into_iter())
+                            .collect();
+
+                        while let Some((
+                            (
+                                Token {
+                                    kind: TokenKind::HorizontalSpace,
+                                    ..
+                                },
+                                _,
+                            ),
+                            elements,
+                        )) = tokens.split_last_mut()
+                        {
+                            tokens = elements.to_vec();
+                        }
+
+                        tokens
+                    },
                 })
             },
         ),
