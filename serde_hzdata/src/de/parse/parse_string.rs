@@ -62,6 +62,7 @@ pub fn parse_string(s: &[u8]) -> ParseResult<String> {
                             .to_vec()
                         },
                     ),
+                    map(take(1usize), |s: &[u8]| s.to_vec()),
                 )),
             )),
             tag(b"\""),
