@@ -22,10 +22,7 @@ impl TextNode {
 
 impl Raw for TextNode {
     fn raw(&self) -> Vec<Token> {
-        self.tokens
-            .iter()
-            .filter_map(|(token, show)| if *show { Some(token.clone()) } else { None })
-            .collect()
+        self.tokens.iter().map(|(token, _)| token.clone()).collect()
     }
 }
 

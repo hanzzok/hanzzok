@@ -8,7 +8,7 @@
     <title>Document</title>
     <style>
         html {
-            max-width: 140ch;
+            max-width: calc(140ch + 4em);
             padding: 3em 1em;
             margin: auto;
             line-height: 1.75;
@@ -21,6 +21,7 @@
         }
         .left, .right {
             max-width: 70ch;
+            padding: 1em;
         }
         @media screen and (max-width: 140ch) {
             .left {
@@ -58,6 +59,12 @@
             for (const element of document.getElementsByClassName('math-block')) {
                 katex.render(element.textContent, element, {
                     throwOnError: false
+                });
+            }
+            for (const element of document.getElementsByClassName('math-inline')) {
+                katex.render(element.textContent, element, {
+                    throwOnError: false,
+                    display: false,
                 });
             }
             shiki
@@ -101,10 +108,16 @@
 Example:
 
 ``` javascript
-fetch('example.com')
+fetch('https://example.com')
     .then(res => res.json())
     .then(res => console.log(res));
 ```
+
+### Code Decorator
+
+Example:
+
+['\n' .code]
 
 ## heading_plugin()
 
@@ -134,6 +147,12 @@ $$
 \sum\limits_{x=0}^{\infty} \frac{1}{x^2}
 $$
 
+### Math Decorator
+
+Example:
+
+WLOG [x \le y \le z .math], we can show that ...
+
 ## quotation_plugin()
 
 ### Blockquote Block Constructor
@@ -161,12 +180,12 @@ Example:
 You can [combine .bold .italic] [together .bold .underline].
         </pre>
         <div class="right">
-<h1>Registered Plugins</h1><ul><li>code</li><li>heading</li><li>list</li><li>math</li><li>quotation</li><li>youtube</li><li>emphasize</li></ul><h2>code_plugin()</h2><h3>Code Block Constructor</h3><p>Example:</p><div class="code-block" data-language="javascript">fetch(&#x27;example.com&#x27;)
+<h1>Registered Plugins</h1><ul><li>code</li><li>heading</li><li>list</li><li>math</li><li>quotation</li><li>youtube</li><li>emphasize</li></ul><h2>code_plugin()</h2><h3>Code Block Constructor</h3><p>Example:</p><div class="code-block" data-language="javascript">fetch(&#x27;https:&#x2f;&#x2f;example.com&#x27;)
     .then(res =&gt; res.json())
     .then(res =&gt; console.log(res));
-</div><h2>heading_plugin()</h2><h3>1~6 Level Heading Block Constructor</h3><p>Example:</p><h5>It&#x27;s h5 heading!</h5><p>
+</div><h3>Code Decorator</h3><p>Example:</p><p><code>&#x27;\n&#x27;</code></p><h2>heading_plugin()</h2><h3>1~6 Level Heading Block Constructor</h3><p>Example:</p><h5>It&#x27;s h5 heading!</h5><p>
 </p><h6>It&#x27;s h6 heading!</h6><h2>list_plugin()</h2><h3>List Block Constructor</h3><p>Example:</p><ul><li>It&#x27;s a list</li><li>Another Entry</li></ul><h2>math_plugin()</h2><h3>Math Block Constructor</h3><p>Example:</p><div class="math-block">\sum\limits_{x=0}^{\infty} \frac{1}{x^2}
-</div><h2>quotation_plugin()</h2><h3>Blockquote Block Constructor</h3><p>Example:</p><blockquote><p>&quot;Was it a cat I saw?&quot;</p><p>Well, probably not.</p></blockquote><h2>youtube_plugin()</h2><h3>YouTube Embed Block Constructor</h3><p>Example:</p><iframe height="315" width="560" title="YouTube video player" src="https://www.youtube.com/embed/hOzbco2EcYQ" allowfullscreen frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe><h2>emphasize_plugin()</h2><h3>Emphasize(bold, italic, underline, strikethrough) Decorators</h3><p><b>Bold</b>, <i>Italic</i>, <u>Underline</u>, <s>Strikethrough</s></p><p>You can <i><b>combine</b></i> <u><b>together</b></u>.</p>
+</div><h3>Math Decorator</h3><p>Example:</p><p>WLOG <span class="math-inline">x \le y \le z</span>, we can show that ...</p><h2>quotation_plugin()</h2><h3>Blockquote Block Constructor</h3><p>Example:</p><blockquote><p>&quot;Was it a cat I saw?&quot;</p><p>Well, probably not.</p></blockquote><h2>youtube_plugin()</h2><h3>YouTube Embed Block Constructor</h3><p>Example:</p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen src="https://www.youtube.com/embed/hOzbco2EcYQ" title="YouTube video player" width="560" height="315" frameborder="0"></iframe><h2>emphasize_plugin()</h2><h3>Emphasize(bold, italic, underline, strikethrough) Decorators</h3><p><b>Bold</b>, <i>Italic</i>, <u>Underline</u>, <s>Strikethrough</s></p><p>You can <i><b>combine</b></i> <u><b>together</b></u>.</p>
         </div>
     </main>
 </body>

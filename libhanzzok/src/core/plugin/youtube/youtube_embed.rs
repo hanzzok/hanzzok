@@ -31,8 +31,7 @@ impl BlockConstructorRule for YouTubeEmbedBlockConstructorRule {
                         .raw()
                         .iter()
                         .map(|t| t.text.clone())
-                        .collect::<Vec<_>>()
-                        .join("")
+                        .collect::<String>()
                 ),
             )
             .set_attr("width", "560")

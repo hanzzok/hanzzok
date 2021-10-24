@@ -70,8 +70,7 @@ impl BlockConstructorRule for CodeBlockConstructorRule {
                     .raw()
                     .iter()
                     .map(|t| t.text.clone())
-                    .collect::<Vec<_>>()
-                    .join(""),
+                    .collect::<String>(),
             )
             .build()
     }

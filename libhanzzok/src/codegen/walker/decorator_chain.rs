@@ -1,10 +1,35 @@
-use crate::{codegen::Context, core::ast::DecoratorChainNode};
+use v_htmlescape::escape;
+
+use crate::{
+    codegen::{Context, HtmlNode},
+    core::ast::{DecoratorChainNode, Raw},
+};
 
 use super::Walker;
 
 impl Walker<DecoratorChainNode> for Context<'_> {
     fn walk(&self, node: DecoratorChainNode) -> Vec<crate::codegen::HtmlNode> {
-        let mut nodes = self.walk(node.main_text);
+        let should_be_raw = node
+            .decorators
+            .first()
+            .and_then(|decorator| self.compiler.decorator_rules.get(&decorator.name))
+            .map(|rule| rule.accept_raw_text())
+            .unwrap_or(false);
+        let mut nodes = if should_be_raw {
+            vec![HtmlNode::create_text(
+                escape(
+                    &node
+                        .main_text
+                        .raw()
+                        .iter()
+                        .map(|t| t.text.clone())
+                        .collect::<String>(),
+                )
+                .to_string(),
+            )]
+        } else {
+            self.walk(node.main_text)
+        };
         for decorator in node.decorators {
             let rule = match self.compiler.decorator_rules.get(&decorator.name) {
                 Some(rule) => rule,

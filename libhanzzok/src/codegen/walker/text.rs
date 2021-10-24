@@ -21,8 +21,7 @@ impl Walker<TextNode> for Context<'_> {
                             None
                         }
                     })
-                    .collect::<Vec<_>>()
-                    .join(""),
+                    .collect::<String>(),
             )
             .to_string(),
         );

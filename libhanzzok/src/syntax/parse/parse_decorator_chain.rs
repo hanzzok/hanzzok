@@ -115,8 +115,7 @@ pub fn parse_decorator_chain(p: HanzzokParser) -> ParseResult<DecoratorChainNode
                         .take(len - 1)
                         .skip(1)
                         .map(|t| t.text)
-                        .collect::<Vec<_>>()
-                        .join("")
+                        .collect::<String>()
                 }),
             },
         ),

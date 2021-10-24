@@ -14,8 +14,7 @@ impl Walker<BlockConstructorNode> for Context<'_> {
                     node.tokens
                         .iter()
                         .map(|t| t.text.clone())
-                        .collect::<Vec<_>>()
-                        .join(""),
+                        .collect::<String>(),
                 )]
             }
         };

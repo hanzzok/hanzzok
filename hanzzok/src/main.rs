@@ -37,7 +37,7 @@ fn main() -> eyre::Result<()> {
     <title>Document</title>
     <style>
         html {{
-            max-width: 140ch;
+            max-width: calc(140ch + 4em);
             padding: 3em 1em;
             margin: auto;
             line-height: 1.75;
@@ -50,6 +50,7 @@ fn main() -> eyre::Result<()> {
         }}
         .left, .right {{
             max-width: 70ch;
+            padding: 1em;
         }}
         @media screen and (max-width: 140ch) {{
             .left {{
@@ -87,6 +88,12 @@ fn main() -> eyre::Result<()> {
             for (const element of document.getElementsByClassName('math-block')) {{
                 katex.render(element.textContent, element, {{
                     throwOnError: false
+                }});
+            }}
+            for (const element of document.getElementsByClassName('math-inline')) {{
+                katex.render(element.textContent, element, {{
+                    throwOnError: false,
+                    display: false,
                 }});
             }}
             shiki

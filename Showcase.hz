@@ -15,10 +15,16 @@
 Example:
 
 ``` javascript
-fetch('example.com')
+fetch('https://example.com')
     .then(res => res.json())
     .then(res => console.log(res));
 ```
+
+### Code Decorator
+
+Example:
+
+['\n' .code]
 
 ## heading_plugin()
 
@@ -47,6 +53,12 @@ Example:
 $$
 \sum\limits_{x=0}^{\infty} \frac{1}{x^2}
 $$
+
+### Math Decorator
+
+Example:
+
+WLOG [x \le y \le z .math], we can show that ...
 
 ## quotation_plugin()
 

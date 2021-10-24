@@ -85,7 +85,7 @@ pub fn parse_block_constructor_basic(p: HanzzokParser) -> ParseResult<BlockConst
     ))(p)?;
 
     let (p, param) = opt(map(parse_block_constructor_params, |params| {
-        let collected: Vec<_> = params.iter().map(|t| t.text.as_ref()).collect::<Vec<_>>();
+        let collected: Vec<_> = params.iter().map(|t| t.text.as_ref()).collect();
         (
             collected.clone().join(""),
             params[0].span.joined_opt(params.last()),
@@ -135,7 +135,7 @@ pub fn parse_block_constructor_shortened(p: HanzzokParser) -> ParseResult<BlockC
     ))(p)?;
 
     let (p, param) = opt(map(parse_block_constructor_params, |params| {
-        let collected: Vec<_> = params.iter().map(|t| t.text.as_ref()).collect::<Vec<_>>();
+        let collected: Vec<_> = params.iter().map(|t| t.text.as_ref()).collect();
         (
             collected.clone().join(""),
             params[0].span.joined_opt(params.last()),
