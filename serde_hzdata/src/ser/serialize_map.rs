@@ -29,7 +29,7 @@ impl<'a, W: Write> HzdataSerializeMap<'a, W> {
 impl<'a, W: Write> serde::ser::SerializeMap for HzdataSerializeMap<'a, W> {
     type Ok = ();
 
-    type Error = Error;
+    type Error = Error<'a>;
 
     fn serialize_key<T: ?Sized>(&mut self, key: &T) -> Result<(), Self::Error>
     where
@@ -41,7 +41,18 @@ impl<'a, W: Write> serde::ser::SerializeMap for HzdataSerializeMap<'a, W> {
         } else {
             write!(self.ser.writer, ",")?;
         }
-        key.serialize(&mut *self.ser)?;
+        match key.serialize(&mut *self.ser) {
+            Ok(_) => {}
+            Err(Error::Io(io)) => {
+                return Err(Error::Io(io));
+            }
+            Err(Error::Custom(message)) => {
+                return Err(Error::Custom(message));
+            }
+            Err(Error::Nom(_)) => {
+                panic!("Serialize must not throw nom error.")
+            }
+        }
         write!(self.ser.writer, "=")?;
 
         Ok(())
@@ -51,7 +62,19 @@ impl<'a, W: Write> serde::ser::SerializeMap for HzdataSerializeMap<'a, W> {
     where
         T: serde::Serialize,
     {
-        value.serialize(&mut *self.ser)
+        match value.serialize(&mut *self.ser) {
+            Ok(_) => {}
+            Err(Error::Io(io)) => {
+                return Err(Error::Io(io));
+            }
+            Err(Error::Custom(message)) => {
+                return Err(Error::Custom(message));
+            }
+            Err(Error::Nom(_)) => {
+                panic!("Serialize must not throw nom error.")
+            }
+        }
+        Ok(())
     }
 
     fn end(self) -> Result<Self::Ok, Self::Error> {
@@ -63,7 +86,7 @@ impl<'a, W: Write> serde::ser::SerializeMap for HzdataSerializeMap<'a, W> {
 impl<'a, W: Write> serde::ser::SerializeStruct for HzdataSerializeMap<'a, W> {
     type Ok = ();
 
-    type Error = Error;
+    type Error = Error<'a>;
 
     fn serialize_field<T: ?Sized>(
         &mut self,
@@ -84,7 +107,7 @@ impl<'a, W: Write> serde::ser::SerializeStruct for HzdataSerializeMap<'a, W> {
 impl<'a, W: Write> serde::ser::SerializeStructVariant for HzdataSerializeMap<'a, W> {
     type Ok = ();
 
-    type Error = Error;
+    type Error = Error<'a>;
 
     fn serialize_field<T: ?Sized>(
         &mut self,

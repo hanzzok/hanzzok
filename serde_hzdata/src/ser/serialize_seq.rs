@@ -1,4 +1,7 @@
-use std::io::Write;
+use std::{
+    io::Write,
+    ops::{Deref, DerefMut},
+};
 
 use crate::Error;
 
@@ -29,7 +32,7 @@ impl<'a, W: Write> HzdataSerializeSeq<'a, W> {
 impl<'a, W: Write> serde::ser::SerializeSeq for HzdataSerializeSeq<'a, W> {
     type Ok = ();
 
-    type Error = Error;
+    type Error = Error<'a>;
 
     fn serialize_element<T: ?Sized>(&mut self, value: &T) -> Result<(), Self::Error>
     where
@@ -40,7 +43,18 @@ impl<'a, W: Write> serde::ser::SerializeSeq for HzdataSerializeSeq<'a, W> {
             self.state = State::Rest
         } else {
             write!(self.ser.writer, ",")?;
-            value.serialize(&mut *self.ser)?;
+            match value.serialize(&mut *self.ser) {
+                Ok(_) => {}
+                Err(Error::Io(io)) => {
+                    return Err(Error::Io(io));
+                }
+                Err(Error::Custom(message)) => {
+                    return Err(Error::Custom(message));
+                }
+                Err(Error::Nom(_)) => {
+                    panic!("Serialize must not throw nom error.")
+                }
+            }
         }
 
         Ok(())
@@ -55,7 +69,7 @@ impl<'a, W: Write> serde::ser::SerializeSeq for HzdataSerializeSeq<'a, W> {
 impl<'a, W: Write> serde::ser::SerializeTuple for HzdataSerializeSeq<'a, W> {
     type Ok = ();
 
-    type Error = Error;
+    type Error = Error<'a>;
 
     fn serialize_element<T: ?Sized>(&mut self, value: &T) -> Result<(), Self::Error>
     where
@@ -72,7 +86,7 @@ impl<'a, W: Write> serde::ser::SerializeTuple for HzdataSerializeSeq<'a, W> {
 impl<'a, W: Write> serde::ser::SerializeTupleStruct for HzdataSerializeSeq<'a, W> {
     type Ok = ();
 
-    type Error = Error;
+    type Error = Error<'a>;
 
     fn serialize_field<T: ?Sized>(&mut self, value: &T) -> Result<(), Self::Error>
     where
@@ -89,7 +103,7 @@ impl<'a, W: Write> serde::ser::SerializeTupleStruct for HzdataSerializeSeq<'a, W
 impl<'a, W: Write> serde::ser::SerializeTupleVariant for HzdataSerializeSeq<'a, W> {
     type Ok = ();
 
-    type Error = Error;
+    type Error = Error<'a>;
 
     fn serialize_field<T: ?Sized>(&mut self, value: &T) -> Result<(), Self::Error>
     where

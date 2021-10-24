@@ -363,6 +363,7 @@ dependencies = [
 name = "serde_hzdata"
 version = "0.1.0"
 dependencies = [
+ "nom",
  "pretty_assertions",
  "regex",
  "serde",

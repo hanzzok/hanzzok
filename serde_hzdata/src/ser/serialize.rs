@@ -14,7 +14,7 @@ pub(crate) struct HzdataSerialize<W: Write> {
 impl<'a, W: Write> Serializer for &'a mut HzdataSerialize<W> {
     type Ok = ();
 
-    type Error = Error;
+    type Error = Error<'a>;
 
     type SerializeSeq = HzdataSerializeSeq<'a, W>;
 
@@ -102,8 +102,7 @@ impl<'a, W: Write> Serializer for &'a mut HzdataSerialize<W> {
     }
 
     fn serialize_char(self, v: char) -> Result<Self::Ok, Self::Error> {
-        write!(self.writer, "{:?}", v)?;
-        Ok(())
+        self.serialize_str(&v.to_string())
     }
 
     fn serialize_str(self, v: &str) -> Result<Self::Ok, Self::Error> {
