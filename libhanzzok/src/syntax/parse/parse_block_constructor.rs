@@ -5,14 +5,10 @@ use nom::{
     combinator::{fail, map, not, opt},
     multi::many0,
     sequence::{preceded, tuple},
-    InputIter,
 };
 
 use crate::{
-    core::ast::{
-        BlockConstructorForm, BlockConstructorNode, InlineConstructorNode, InlineObjectNode,
-        TextNode,
-    },
+    core::ast::{BlockConstructorForm, BlockConstructorNode, InlineObjectNode, TextNode},
     syntax::{
         parse::{
             nom_ext::{any, skip_vertical_spaces},

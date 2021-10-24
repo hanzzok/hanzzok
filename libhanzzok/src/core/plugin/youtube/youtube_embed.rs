@@ -1,6 +1,6 @@
 use crate::{
     api::BlockConstructorRule,
-    codegen::{Context, HtmlNode, Walker},
+    codegen::{Context, HtmlNode},
     core::ast::{BlockConstructorForm, InlineObjectNode, Raw},
 };
 
@@ -17,7 +17,7 @@ impl BlockConstructorRule for YouTubeEmbedBlockConstructorRule {
 
     fn apply(
         &self,
-        context: &Context,
+        context: &mut Context,
         main_text: Vec<InlineObjectNode>,
         _: Option<String>,
         _: Vec<Vec<InlineObjectNode>>,

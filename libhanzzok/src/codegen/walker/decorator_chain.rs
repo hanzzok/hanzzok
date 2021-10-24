@@ -8,7 +8,7 @@ use crate::{
 use super::Walker;
 
 impl Walker<DecoratorChainNode> for Context<'_> {
-    fn walk(&self, node: DecoratorChainNode) -> Vec<crate::codegen::HtmlNode> {
+    fn walk(&mut self, node: DecoratorChainNode) -> Vec<crate::codegen::HtmlNode> {
         let should_be_raw = node
             .decorators
             .first()

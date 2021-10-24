@@ -6,7 +6,7 @@ use crate::{
 use super::Walker;
 
 impl Walker<BlockConstructorNode> for Context<'_> {
-    fn walk(&self, node: BlockConstructorNode) -> Vec<HtmlNode> {
+    fn walk(&mut self, node: BlockConstructorNode) -> Vec<HtmlNode> {
         let rule = match self.compiler.block_constructor_rules.get(&node.name) {
             Some(rule) => rule,
             None => {

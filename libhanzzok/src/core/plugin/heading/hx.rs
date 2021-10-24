@@ -19,7 +19,7 @@ impl BlockConstructorRule for HxBlockConstructorRule {
 
     fn apply(
         &self,
-        context: &Context,
+        context: &mut Context,
         main_text: Vec<InlineObjectNode>,
         _param: Option<String>,
         _: Vec<Vec<InlineObjectNode>>,

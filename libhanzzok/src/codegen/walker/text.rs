@@ -8,7 +8,7 @@ use crate::{
 use super::Walker;
 
 impl Walker<TextNode> for Context<'_> {
-    fn walk(&self, node: TextNode) -> Vec<HtmlNode> {
+    fn walk(&mut self, node: TextNode) -> Vec<HtmlNode> {
         let text = HtmlNode::create_text(
             escape(
                 &node

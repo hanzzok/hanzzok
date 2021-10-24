@@ -16,7 +16,7 @@ impl DecoratorRule for MathDecoratorRule {
 
     fn apply(
         &self,
-        context: &Context,
+        context: &mut Context,
         target: Vec<HtmlNode>,
         param: Option<String>,
     ) -> Vec<HtmlNode> {

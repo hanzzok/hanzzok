@@ -7,7 +7,6 @@ use std::{
 };
 
 use nom::{
-    branch::alt,
     combinator::{fail, opt},
     InputIter, InputLength, InputTake, Needed, Offset, Slice,
 };
@@ -19,7 +18,7 @@ use crate::{
     syntax::{parse::ParseResult, tokenize, Token, TokenKind},
 };
 
-use super::{satisfy, tag};
+use super::satisfy;
 
 #[derive(Clone)]
 pub struct HanzzokParser {

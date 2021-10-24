@@ -17,7 +17,7 @@ impl BlockConstructorRule for UnorderedListBlockConstructorRule {
 
     fn apply(
         &self,
-        context: &Context,
+        context: &mut Context,
         _: Vec<InlineObjectNode>,
         _: Option<String>,
         multiline_text: Vec<Vec<InlineObjectNode>>,

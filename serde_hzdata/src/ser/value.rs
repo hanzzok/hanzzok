@@ -1,4 +1,4 @@
-use serde::{ser::SerializeStruct, Serialize, Serializer};
+use serde::{ser::SerializeStruct, Serialize};
 
 use crate::{
     value::{HzdataRegexText, HzdataUnitValue},

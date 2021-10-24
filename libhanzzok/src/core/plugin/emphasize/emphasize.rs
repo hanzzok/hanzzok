@@ -15,7 +15,7 @@ impl DecoratorRule for EmphasizeDecoratorRule {
 
     fn apply(
         &self,
-        context: &Context,
+        context: &mut Context,
         target: Vec<HtmlNode>,
         param: Option<String>,
     ) -> Vec<HtmlNode> {

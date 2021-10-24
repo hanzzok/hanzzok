@@ -14,7 +14,7 @@ pub trait BlockConstructorRule {
 
     fn apply(
         &self,
-        context: &Context,
+        context: &mut Context,
         main_text: Vec<InlineObjectNode>,
         param: Option<String>,
         multiline_text: Vec<Vec<InlineObjectNode>>,

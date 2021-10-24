@@ -24,7 +24,7 @@ impl BlockConstructorRule for CodeBlockConstructorRule {
 
     fn apply(
         &self,
-        context: &Context,
+        context: &mut Context,
         main_text: Vec<InlineObjectNode>,
         _: Option<String>,
         multiline_text: Vec<Vec<InlineObjectNode>>,

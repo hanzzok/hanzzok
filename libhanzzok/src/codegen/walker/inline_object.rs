@@ -6,7 +6,7 @@ use crate::{
 use super::Walker;
 
 impl Walker<InlineObjectNode> for Context<'_> {
-    fn walk(&self, node: InlineObjectNode) -> Vec<HtmlNode> {
+    fn walk(&mut self, node: InlineObjectNode) -> Vec<HtmlNode> {
         match node {
             InlineObjectNode::DecoratorChain(node) => self.walk(node),
             InlineObjectNode::InlineConstructor(_) => {

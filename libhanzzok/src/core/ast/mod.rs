@@ -1,5 +1,3 @@
-use core::fmt;
-
 pub use block_constructor::{BlockConstructorForm, BlockConstructorNode};
 pub use decorator_chain::{DecoratorChainNode, DecoratorNode};
 pub use inline_constructor::InlineConstructorNode;

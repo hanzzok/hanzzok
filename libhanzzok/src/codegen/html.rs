@@ -84,7 +84,11 @@ pub struct HtmlTagNode {
 impl HtmlTagNode {
     pub fn write(&self, w: &mut impl Write) -> io::Result<()> {
         write!(w, "<{}", &self.tag)?;
-        for (key, value) in &self.attrs {
+
+        let mut attrs: Vec<_> = self.attrs.iter().collect();
+        attrs.sort();
+
+        for (key, value) in attrs {
             if value.is_empty() {
                 write!(w, " {}", key)?;
             } else {

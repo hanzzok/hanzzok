@@ -194,6 +194,7 @@ dependencies = [
  "once_cell",
  "pretty_assertions",
  "serde",
+ "serde_hzdata",
  "thiserror",
  "toml",
  "v_htmlescape",
