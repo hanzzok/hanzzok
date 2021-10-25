@@ -15,30 +15,30 @@ enum State {
     Done,
 }
 
-pub struct SeqAccess<'a, 'de: 'a> {
+pub struct MapAccess<'a, 'de: 'a> {
     deserializer: &'a mut HzdataDeserializer<'de>,
     state: State,
 }
 
-impl<'a, 'de: 'a> SeqAccess<'a, 'de> {
+impl<'a, 'de: 'a> MapAccess<'a, 'de> {
     pub(super) fn new(deserializer: &'a mut HzdataDeserializer<'de>) -> Self {
-        SeqAccess {
+        MapAccess {
             deserializer,
             state: State::First,
         }
     }
 }
 
-impl<'a, 'de: 'a> de::SeqAccess<'de> for SeqAccess<'a, 'de> {
+impl<'a, 'de: 'a> de::MapAccess<'de> for MapAccess<'a, 'de> {
     type Error = Error<'de>;
 
-    fn next_element_seed<T>(&mut self, seed: T) -> Result<Option<T::Value>, Self::Error>
+    fn next_key_seed<K>(&mut self, seed: K) -> Result<Option<K::Value>, Self::Error>
     where
-        T: de::DeserializeSeed<'de>,
+        K: de::DeserializeSeed<'de>,
     {
         let s = self.deserializer.source;
         let (s, _) = skip_whitespaces(s)?;
-        let (s, close) = cond(self.state == State::Rest, opt(tag(b"]")))(s)?;
+        let (s, close) = cond(self.state == State::Rest, opt(tag(b"}")))(s)?;
 
         if close.flatten().is_some() {
             self.deserializer.source = s;
@@ -47,7 +47,7 @@ impl<'a, 'de: 'a> de::SeqAccess<'de> for SeqAccess<'a, 'de> {
         }
 
         let (s, _) = (if self.state == State::First {
-            opt(tag(b"["))(s)
+            opt(tag(b"{"))(s)
         } else {
             map(tag(b","), Some)(s)
         })?;
@@ -58,5 +58,18 @@ impl<'a, 'de: 'a> de::SeqAccess<'de> for SeqAccess<'a, 'de> {
         self.deserializer.source = s;
 
         seed.deserialize(&mut *self.deserializer).map(Some)
+    }
+
+    fn next_value_seed<V>(&mut self, seed: V) -> Result<V::Value, Self::Error>
+    where
+        V: de::DeserializeSeed<'de>,
+    {
+        let s = self.deserializer.source;
+        let (s, _) = skip_whitespaces(s)?;
+        let (s, _) = tag(b"=")(s)?;
+        let (s, _) = skip_whitespaces(s)?;
+
+        self.deserializer.source = s;
+        seed.deserialize(&mut *self.deserializer)
     }
 }

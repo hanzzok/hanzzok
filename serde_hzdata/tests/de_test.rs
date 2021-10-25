@@ -19,3 +19,19 @@ pub fn test_de_array() {
         serde_hzdata::from_str::<[i8; 3]>(r#" [0, 1 ,2 ] "#).unwrap()
     );
 }
+
+#[test]
+pub fn test_de_struct() {
+    #[derive(serde::Deserialize, Debug, PartialEq)]
+    struct Test {
+        a: Option<String>,
+        b: Vec<Option<i8>>,
+    }
+    assert_eq!(
+        Test {
+            a: None,
+            b: vec![Some(3), Some(5)]
+        },
+        serde_hzdata::from_str::<Test>(r#" { b = [3, 5] } "#).unwrap()
+    );
+}

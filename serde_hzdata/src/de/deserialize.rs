@@ -1,8 +1,11 @@
 use serde::de;
 
-use crate::{de::SeqAccess, Error};
+use crate::{
+    de::{MapAccess, SeqAccess},
+    Error,
+};
 
-use super::parse::{parse_bool, parse_number, parse_string, Number};
+use super::parse::{parse_bool, parse_identifier, parse_number, parse_string, Number};
 
 pub struct HzdataDeserializer<'de> {
     pub(crate) source: &'de [u8],
@@ -99,7 +102,7 @@ impl<'a, 'de: 'a> de::Deserializer<'de> for &'a mut HzdataDeserializer<'de> {
     where
         V: de::Visitor<'de>,
     {
-        todo!()
+        visitor.visit_some(self)
     }
 
     fn deserialize_unit<V>(self, visitor: V) -> Result<V::Value, Self::Error>
@@ -162,7 +165,8 @@ impl<'a, 'de: 'a> de::Deserializer<'de> for &'a mut HzdataDeserializer<'de> {
     where
         V: de::Visitor<'de>,
     {
-        todo!()
+        let map_access = MapAccess::new(self);
+        visitor.visit_map(map_access)
     }
 
     fn deserialize_struct<V>(
@@ -174,7 +178,7 @@ impl<'a, 'de: 'a> de::Deserializer<'de> for &'a mut HzdataDeserializer<'de> {
     where
         V: de::Visitor<'de>,
     {
-        todo!()
+        self.deserialize_map(visitor)
     }
 
     fn deserialize_enum<V>(
@@ -193,7 +197,9 @@ impl<'a, 'de: 'a> de::Deserializer<'de> for &'a mut HzdataDeserializer<'de> {
     where
         V: de::Visitor<'de>,
     {
-        todo!()
+        let (source, val) = parse_identifier(self.source)?;
+        self.source = source;
+        visitor.visit_str(&val)
     }
 
     fn deserialize_ignored_any<V>(self, visitor: V) -> Result<V::Value, Self::Error>
