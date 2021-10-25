@@ -1,6 +1,6 @@
-use serde::de::{self};
+use serde::de;
 
-use crate::Error;
+use crate::{de::SeqAccess, Error};
 
 use super::parse::{parse_bool, parse_number, parse_string, Number};
 
@@ -24,7 +24,7 @@ macro_rules! deserialize_number {
     };
 }
 
-impl<'de> de::Deserializer<'de> for HzdataDeserializer<'de> {
+impl<'a, 'de: 'a> de::Deserializer<'de> for &'a mut HzdataDeserializer<'de> {
     type Error = Error<'de>;
 
     fn deserialize_any<V>(self, visitor: V) -> Result<V::Value, Self::Error>
@@ -131,18 +131,19 @@ impl<'de> de::Deserializer<'de> for HzdataDeserializer<'de> {
         todo!()
     }
 
-    fn deserialize_seq<V>(self, visitor: V) -> Result<V::Value, Self::Error>
+    fn deserialize_seq<V>(mut self, visitor: V) -> Result<V::Value, Self::Error>
     where
         V: de::Visitor<'de>,
     {
-        todo!()
+        let seq_access = SeqAccess::new(&mut self);
+        visitor.visit_seq(seq_access)
     }
 
     fn deserialize_tuple<V>(self, len: usize, visitor: V) -> Result<V::Value, Self::Error>
     where
         V: de::Visitor<'de>,
     {
-        todo!()
+        self.deserialize_seq(visitor)
     }
 
     fn deserialize_tuple_struct<V>(
@@ -154,7 +155,7 @@ impl<'de> de::Deserializer<'de> for HzdataDeserializer<'de> {
     where
         V: de::Visitor<'de>,
     {
-        todo!()
+        self.deserialize_seq(visitor)
     }
 
     fn deserialize_map<V>(self, visitor: V) -> Result<V::Value, Self::Error>
