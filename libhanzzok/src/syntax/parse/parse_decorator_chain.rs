@@ -68,6 +68,17 @@ pub fn parse_decorator_chain(p: HanzzokParser) -> ParseResult<DecoratorChainNode
                             elements,
                         )) = tokens.split_last_mut()
                         {
+                            if let Some((
+                                Token {
+                                    kind: TokenKind::PunctuationReverseSolidus,
+                                    ..
+                                },
+                                _,
+                            )) = elements.last()
+                            {
+                                break;
+                            }
+
                             tokens = elements.to_vec();
                         }
 
