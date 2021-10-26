@@ -17,7 +17,7 @@ impl BlockConstructorRule for YouTubeEmbedBlockConstructorRule {
 
     fn apply(
         &self,
-        context: &mut Context,
+        _context: &mut Context,
         main_text: Vec<InlineObjectNode>,
         _: Option<String>,
         _: Vec<Vec<InlineObjectNode>>,

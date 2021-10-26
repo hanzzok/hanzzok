@@ -46,6 +46,8 @@ impl TokenizeExtras {
 #[derive(Clone, Debug, Logos, PartialEq)]
 #[logos(extras = TokenizeExtras)]
 pub enum TokenKind {
+    #[token("\"")]
+    PunctuationQuotationMark,
     #[token("#")]
     PunctuationNumberSign,
     #[token("(")]
@@ -67,7 +69,7 @@ pub enum TokenKind {
     #[token("}")]
     PunctuationRightCurlyBracket,
 
-    #[regex(r"[!$%&*+,-/:;<=>?@\^_`~]+", |lex| lex.slice().to_owned())]
+    #[regex(r#"[!"$%&'*+,-/:;<=>?@\^_`~]+"#, |lex| lex.slice().to_owned())]
     PunctuationsOther(String),
 
     /*
@@ -88,7 +90,7 @@ pub enum TokenKind {
     #[regex("[ ]")]
     HorizontalSpace,
 
-    #[regex(r"[^\n\r !#$%&()*+,-.\\/:;<=>?@\[\]\^_`|~{}]+", |lex| lex.slice().to_owned())]
+    #[regex(r##"[^\n\r !"#$%&'()*+,-.\\/:;<=>?@\[\]\^_`|~{}]+"##, |lex| lex.slice().to_owned())]
     Word(String),
 
     #[error]

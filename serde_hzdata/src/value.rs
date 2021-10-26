@@ -1,4 +1,4 @@
-use std::hash::Hash;
+use std::{collections::HashMap, hash::Hash};
 
 use crate::Unit;
 
@@ -10,6 +10,10 @@ pub enum HzdataValue {
     String(String),
     RegexText(HzdataRegexText),
     Unit(HzdataUnitValue),
+    Array(Vec<HzdataValue>),
+    Object(HashMap<String, HzdataValue>),
+    // Just for the serde
+    Nothing,
 }
 
 #[derive(Clone, Debug, Eq, Hash, PartialEq)]

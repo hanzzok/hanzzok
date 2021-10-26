@@ -69,7 +69,8 @@ impl BlockConstructorNameParser {
         let (p, v) = opt(satisfy(|t| {
             matches!(
                 t.kind,
-                TokenKind::PunctuationNumberSign
+                TokenKind::PunctuationQuotationMark
+                    | TokenKind::PunctuationNumberSign
                     | TokenKind::PunctuationLeftParenthesis
                     | TokenKind::PunctuationRightParenthesis
                     | TokenKind::PunctuationFullStop
@@ -172,12 +173,12 @@ impl InputTake for HanzzokParser {
         (
             HanzzokParser {
                 tokens: suffix.to_vec(),
-                offset: self.offset,
+                offset: self.offset + count,
                 block_constructors: self.block_constructors.clone(),
             },
             HanzzokParser {
                 tokens: prefix.to_vec(),
-                offset: self.offset + count,
+                offset: self.offset,
                 block_constructors: self.block_constructors.clone(),
             },
         )

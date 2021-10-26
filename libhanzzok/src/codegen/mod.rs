@@ -19,8 +19,22 @@ pub fn compile_html(
 
     let html_nodes: Vec<_> = nodes.iter().flat_map(|node| context.walk(node)).collect();
     for html_node in html_nodes {
-        html_node.write(w)?;
+        html_node.write(&context, w)?;
     }
 
     Ok(())
+}
+
+pub fn compile_html_with_hint<'a>(
+    nodes: &'a [HanzzokAstNode],
+    compiler: &'a Compiler,
+) -> (Context<'a>, Vec<(HanzzokAstNode, Vec<HtmlNode>)>) {
+    let mut context = Context::new(compiler);
+
+    let html_nodes: Vec<_> = nodes
+        .iter()
+        .map(|node| (node.clone(), context.walk(node)))
+        .collect();
+
+    (context, html_nodes)
 }

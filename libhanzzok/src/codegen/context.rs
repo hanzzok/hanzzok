@@ -1,12 +1,13 @@
 use std::collections::HashMap;
 
+use serde::{Deserialize, Serialize};
 use serde_hzdata::HzdataValue;
 
-use crate::core::{Compiler, Plugin};
+use crate::core::Compiler;
 
 pub struct Context<'a> {
     pub(crate) compiler: &'a Compiler,
-    pub meta: HashMap<(Plugin, String), HzdataValue>,
+    pub meta: HashMap<String, HzdataValue>,
 }
 
 impl<'a> Context<'a> {
@@ -15,5 +16,42 @@ impl<'a> Context<'a> {
             compiler,
             meta: HashMap::new(),
         }
+    }
+
+    pub fn load_meta<'de, T>(&self, plugin: impl AsRef<str>, name: impl AsRef<str>) -> Option<T>
+    where
+        T: Deserialize<'de>,
+    {
+        self.meta
+            .get(&format!("{}::{}", plugin.as_ref(), name.as_ref()))
+            .and_then(|v| serde_hzdata::from_value(v.clone()).ok())
+    }
+
+    pub fn load_meta_or_default<'de, T>(&self, plugin: impl AsRef<str>, name: impl AsRef<str>) -> T
+    where
+        T: Deserialize<'de>,
+        T: Default,
+    {
+        self.meta
+            .get(&format!("{}::{}", plugin.as_ref(), name.as_ref()))
+            .and_then(|v| serde_hzdata::from_value(v.clone()).ok())
+            .unwrap_or_default()
+    }
+
+    pub fn save_meta<T>(
+        &mut self,
+        plugin: impl AsRef<str>,
+        name: impl AsRef<str>,
+        meta: T,
+    ) -> Result<(), serde_hzdata::Error<'static>>
+    where
+        T: Serialize,
+    {
+        self.meta.insert(
+            format!("{}::{}", plugin.as_ref(), name.as_ref()),
+            serde_hzdata::to_value(meta)?,
+        );
+
+        Ok(())
     }
 }

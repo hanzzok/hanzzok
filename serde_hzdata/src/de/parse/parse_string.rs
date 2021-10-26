@@ -1,11 +1,10 @@
 use nom::{
     branch::alt,
-    bytes::complete::{is_a, tag, take, take_while_m_n},
-    combinator::{map, not, opt, recognize, value},
-    multi::{many0, many_m_n},
+    bytes::complete::{tag, take, take_while_m_n},
+    combinator::{map, not, value},
+    multi::many0,
     sequence::{delimited, preceded, tuple},
 };
-use serde::__private::from_utf8_lossy;
 
 use super::{skip_whitespaces, ParseResult};
 

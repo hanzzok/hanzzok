@@ -11,32 +11,19 @@ use crate::{
 };
 
 use super::{
-    nom_ext::{any, satisfy_transform, skip_any_spaces, tag, HanzzokParser},
+    nom_ext::{satisfy_transform, skip_any_spaces, tag, HanzzokParser},
+    parse_hzdata::parse_hzdata_paired,
     parse_inline_constructor::parse_inline_constructor,
     parse_text::{parse_escaped_text, parse_fallback_text},
     ParseResult,
 };
 
 fn parse_decorator_params(p: HanzzokParser) -> ParseResult<Vec<Token>> {
-    let (p, (l, v, r)) = tuple((
-        tag(TokenKind::PunctuationLeftParenthesis),
-        many0(alt((
-            parse_decorator_params,
-            map(
-                preceded(
-                    not(alt((
-                        tag(TokenKind::PunctuationLeftParenthesis),
-                        tag(TokenKind::PunctuationRightParenthesis),
-                    ))),
-                    any,
-                ),
-                |t| vec![t],
-            ),
-        ))),
-        tag(TokenKind::PunctuationRightParenthesis),
-    ))(p)?;
-
-    Ok((p, [vec![l], v.concat(), vec![r]].concat()))
+    parse_hzdata_paired(
+        TokenKind::PunctuationLeftParenthesis,
+        TokenKind::PunctuationRightParenthesis,
+        true,
+    )(p)
 }
 
 pub fn parse_decorator_chain(p: HanzzokParser) -> ParseResult<DecoratorChainNode> {

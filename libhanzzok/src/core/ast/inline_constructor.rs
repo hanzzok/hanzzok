@@ -10,6 +10,7 @@ use super::Raw;
 #[derive(Clone, Debug)]
 pub struct InlineConstructorNode {
     pub name: String,
+    pub params: Vec<Token>,
     pub tokens: Vec<Token>,
 }
 

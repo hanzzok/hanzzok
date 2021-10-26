@@ -22,6 +22,7 @@ use super::Token;
 mod nom_ext;
 mod parse_block_constructor;
 mod parse_decorator_chain;
+mod parse_hzdata;
 mod parse_inline_constructor;
 mod parse_inline_object;
 mod parse_newline;

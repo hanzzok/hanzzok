@@ -115,7 +115,6 @@ impl<'a, W: Write> Serializer for &'a mut HzdataSerialize<W> {
     }
 
     fn serialize_none(self) -> Result<Self::Ok, Self::Error> {
-        write!(self.writer, "None")?;
         Ok(())
     }
 
@@ -127,7 +126,7 @@ impl<'a, W: Write> Serializer for &'a mut HzdataSerialize<W> {
     }
 
     fn serialize_unit(self) -> Result<Self::Ok, Self::Error> {
-        todo!()
+        Ok(())
     }
 
     fn serialize_unit_struct(self, _name: &'static str) -> Result<Self::Ok, Self::Error> {

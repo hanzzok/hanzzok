@@ -8,6 +8,8 @@
 - youtube
 - emphasize
 
+| table-of-contents
+
 ## code_plugin()
 
 ### Code Block Constructor
@@ -85,3 +87,9 @@ Example:
 [Bold .bold], [Italic .italic], [Underline .underline], [Strikethrough .strikethrough]
 
 You can [combine .bold .italic] [together .bold .underline].
+
+## icon_plugin()
+
+### Icon Inline Constructor
+
+the solved.ac rating of asdhugh1 is [#icon("https://static.solved.ac/tier_small/15.svg")]1524

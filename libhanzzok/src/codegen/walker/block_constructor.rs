@@ -15,7 +15,7 @@ impl Walker<BlockConstructorNode> for Context<'_> {
                         .iter()
                         .map(|t| t.text.clone())
                         .collect::<String>(),
-                )]
+                )];
             }
         };
         vec![rule.apply(self, node.main_text, node.param, node.multiline_text)]

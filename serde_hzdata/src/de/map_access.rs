@@ -51,9 +51,16 @@ impl<'a, 'de: 'a> de::MapAccess<'de> for MapAccess<'a, 'de> {
         } else {
             map(tag(b","), Some)(s)
         })?;
-        self.state = State::Rest;
-
         let (s, _) = skip_whitespaces(s)?;
+        if self.state == State::First {
+            let (s, close) = opt(tag(b"}"))(s)?;
+            if close.is_some() {
+                self.deserializer.source = s;
+                self.state = State::Done;
+                return Ok(None);
+            }
+        }
+        self.state = State::Rest;
 
         self.deserializer.source = s;
 

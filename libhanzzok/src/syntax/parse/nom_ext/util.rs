@@ -17,13 +17,6 @@ pub fn err_kind<T, Error: ParseError<HanzzokParser>>(
     Err(Err::Error(Error::from_error_kind(i, kind)))
 }
 
-#[inline(always)]
-pub fn err_tag<T, Error: ParseError<HanzzokParser>>(
-    i: HanzzokParser,
-) -> IResult<HanzzokParser, T, Error> {
-    err_kind(i, ErrorKind::Tag)
-}
-
 pub fn satisfy<F, Error: ParseError<HanzzokParser>>(
     cond: F,
 ) -> impl Fn(HanzzokParser) -> IResult<HanzzokParser, Token, Error>

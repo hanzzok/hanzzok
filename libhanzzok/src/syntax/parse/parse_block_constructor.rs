@@ -3,7 +3,7 @@ use std::iter::once;
 use nom::{
     branch::alt,
     combinator::{fail, map, not, opt},
-    multi::many0,
+    multi::{many0, many1},
     sequence::{preceded, tuple},
 };
 
@@ -23,6 +23,7 @@ use super::{
         satisfy_transform, skip_any_spaces, skip_horizontal_spaces, tag,
         BlockConstructorNameParser, HanzzokParser,
     },
+    parse_hzdata::parse_hzdata_paired,
     parse_inline_object::parse_inline_object,
     ParseResult,
 };
@@ -37,25 +38,11 @@ pub fn parse_block_constructor(p: HanzzokParser) -> ParseResult<BlockConstructor
 }
 
 fn parse_block_constructor_params(p: HanzzokParser) -> ParseResult<Vec<Token>> {
-    let (p, (l, v, r)) = tuple((
-        tag(TokenKind::PunctuationLeftCurlyBracket),
-        many0(alt((
-            parse_block_constructor_params,
-            map(
-                preceded(
-                    not(alt((
-                        tag(TokenKind::PunctuationLeftCurlyBracket),
-                        tag(TokenKind::PunctuationRightCurlyBracket),
-                    ))),
-                    any,
-                ),
-                |t| vec![t],
-            ),
-        ))),
-        tag(TokenKind::PunctuationRightCurlyBracket),
-    ))(p)?;
-
-    Ok((p, [vec![l], v.concat(), vec![r]].concat()))
+    parse_hzdata_paired(
+        TokenKind::PunctuationLeftCurlyBracket,
+        TokenKind::PunctuationRightCurlyBracket,
+        false,
+    )(p)
 }
 
 pub fn parse_block_constructor_basic(p: HanzzokParser) -> ParseResult<BlockConstructorNode> {
@@ -65,10 +52,13 @@ pub fn parse_block_constructor_basic(p: HanzzokParser) -> ParseResult<BlockConst
 
     let (p, _) = skip_horizontal_spaces(p)?;
 
-    let (p, name) = satisfy_transform(|t| match &t.kind {
+    let (p, name) = many1(satisfy_transform(|t| match &t.kind {
         TokenKind::Word(w) => Some(w.clone()),
+        TokenKind::PunctuationsOther(w) => Some(w.clone()),
         _ => None,
-    })(p)?;
+    }))(p)?;
+
+    let name: String = name.iter().map(|(_, s)| s.clone()).collect();
 
     let (p, _) = skip_horizontal_spaces(p)?;
 
@@ -95,7 +85,7 @@ pub fn parse_block_constructor_basic(p: HanzzokParser) -> ParseResult<BlockConst
         p,
         BlockConstructorNode {
             form: BlockConstructorForm::Basic,
-            name: name.1,
+            name,
             main_text,
             param: param.map(|(s, _)| s.clone()),
             multiline_text: Vec::new(),

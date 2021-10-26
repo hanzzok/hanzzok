@@ -16,9 +16,9 @@ impl DecoratorRule for MathDecoratorRule {
 
     fn apply(
         &self,
-        context: &mut Context,
+        _context: &mut Context,
         target: Vec<HtmlNode>,
-        param: Option<String>,
+        _param: Option<String>,
     ) -> Vec<HtmlNode> {
         vec![HtmlNode::create_tag_builder("span")
             .append_all(target)

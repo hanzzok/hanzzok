@@ -13,18 +13,22 @@
             margin: auto;
             line-height: 1.75;
             font-size: 1.25em;
-        }
-        main {
+
             display: flex;
             flex-direction: row;
             justify-content: center;
         }
-        .left, .right {
-            max-width: 70ch;
+        td pre {
             padding: 1em;
+            margin: 0;
+        }
+        td {
+            max-width: 70ch;
+            height: auto;
+            padding: 0;
         }
         @media screen and (max-width: 140ch) {
-            .left {
+            td:first-of-type {
                 display: none;
             }
         }
@@ -50,6 +54,18 @@
         .code-block > pre {
             padding: 0.5rem;
         }
+        .icon {
+            width: 1em;
+            vertical-align: middle;
+            display: inline;
+        }
+        .table-of-contents {
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+        .table-of-contents ol {
+            margin-bottom: 0;
+        }
     </style>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.18/dist/katex.min.css" integrity="sha384-zTROYFVGOfTw7JV7KUu8udsvW2fx4lWOsCEDqhBreBwlHI4ioVRtmIvEThzJHGET" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.18/dist/katex.min.js" integrity="sha384-GxNFqL3r9uRJQhR+47eDxuPoNE7yLftQM8LcxzgS4HT73tp970WS/wV5p8UzCOmb" crossorigin="anonymous"></script>
@@ -68,32 +84,41 @@
                 });
             }
             shiki
-            .getHighlighter({
-                theme: 'nord',
-                langs: ['javascript']
-            })
-            .then(highlighter => {
-                for (const element of document.getElementsByClassName('code-block')) {
-                    let code;
-                    try {
-                        code = highlighter.codeToHtml(element.textContent, element.dataset['language']);
-                    } catch {
-                        code = highlighter.codeToHtml(element.textContent, 'text');
+                .getHighlighter({
+                    theme: 'nord',
+                    langs: ['javascript']
+                })
+                .then(highlighter => {
+                    for (const element of document.getElementsByClassName('code-block')) {
+                        let code;
+                        try {
+                            code = highlighter.codeToHtml(element.textContent, element.dataset['language']);
+                        } catch {
+                            code = highlighter.codeToHtml(element.textContent, 'text');
+                        }
+                        element.innerHTML = code;
+                        
                     }
-                    element.innerHTML = code;
-                    
-                }
-            });
+                });
         });
     </script>
 </head>
 
 <body>
-    <main>
-        <pre class="left">
-# Registered Plugins
+    <table>
 
-- code
+        <tr>
+            <td>
+                <pre># Registered Plugins</pre>
+            </td>
+            <td>
+        <h1>Registered Plugins</h1>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>- code
 - heading
 - list
 - math
@@ -101,93 +126,382 @@
 - youtube
 - emphasize
 
-## code_plugin()
-
-### Code Block Constructor
-
-Example:
-
-``` javascript
-fetch('https://example.com')
-    .then(res => res.json())
-    .then(res => console.log(res));
-```
-
-### Code Decorator
-
-Example:
-
-['\n' .code]
-
-## heading_plugin()
-
-### 1~6 Level Heading Block Constructor
-
-Example:
-
-##### It's h5 heading!
-###### It's h6 heading!
-
-## list_plugin()
-
-### List Block Constructor
-
-Example:
-
-- It's a list
-- Another Entry
-
-## math_plugin()
-
-### Math Block Constructor
-
-Example:
-
-$$
-\sum\limits_{x=0}^{\infty} \frac{1}{x^2}
-$$
-
-### Math Decorator
-
-Example:
-
-WLOG [x \le y \le z .math], we can show that ...
-
-## quotation_plugin()
-
-### Blockquote Block Constructor
-
-Example:
-
-> "Was it a cat I saw?"
->
-> Well, probably not.
-
-## youtube_plugin()
-
-### YouTube Embed Block Constructor
-
-Example:
-
-| youtube hOzbco2EcYQ
-
-## emphasize_plugin()
-
-### Emphasize(bold, italic, underline, strikethrough) Decorators
-
-[Bold .bold], [Italic .italic], [Underline .underline], [Strikethrough .strikethrough]
-
-You can [combine .bold .italic] [together .bold .underline].
-        </pre>
-        <div class="right">
-<h1>Registered Plugins</h1><ul><li>code</li><li>heading</li><li>list</li><li>math</li><li>quotation</li><li>youtube</li><li>emphasize</li></ul><h2>code_plugin()</h2><h3>Code Block Constructor</h3><p>Example:</p><div class="code-block" data-language="javascript">fetch(&#x27;https:&#x2f;&#x2f;example.com&#x27;)
+</pre>
+            </td>
+            <td>
+        <ul><li>code</li><li>heading</li><li>list</li><li>math</li><li>quotation</li><li>youtube</li><li>emphasize</li></ul>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>| table-of-contents</pre>
+            </td>
+            <td>
+        <div class="table-of-contents"><ol><li>Registered Plugins<ol><li>code_plugin()<ol><li>Code Block Constructor<ol></ol></li><li>Code Decorator<ol></ol></li></ol></li><li>heading_plugin()<ol><li>1~6 Level Heading Block Constructor<ol></ol></li></ol></li><li>list_plugin()<ol><li>List Block Constructor<ol></ol></li></ol></li><li>math_plugin()<ol><li>Math Block Constructor<ol></ol></li><li>Math Decorator<ol></ol></li></ol></li><li>quotation_plugin()<ol><li>Blockquote Block Constructor<ol></ol></li></ol></li><li>youtube_plugin()<ol><li>YouTube Embed Block Constructor<ol></ol></li></ol></li><li>emphasize_plugin()<ol><li>Emphasize(bold, italic, underline, strikethrough) Decorators<ol></ol></li></ol></li><li>icon_plugin()<ol><li>Icon Inline Constructor<ol></ol></li></ol></li></ol></li></ol></div>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>## code_plugin()</pre>
+            </td>
+            <td>
+        <h2>code_plugin()</h2>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>### Code Block Constructor</pre>
+            </td>
+            <td>
+        <h3>Code Block Constructor</h3>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>Example:</pre>
+            </td>
+            <td>
+        <p>Example:</p>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>``` javascript
+fetch(&#x27;https:&#x2f;&#x2f;example.com&#x27;)
     .then(res =&gt; res.json())
     .then(res =&gt; console.log(res));
-</div><h3>Code Decorator</h3><p>Example:</p><p><code>&#x27;\n&#x27;</code></p><h2>heading_plugin()</h2><h3>1~6 Level Heading Block Constructor</h3><p>Example:</p><h5>It&#x27;s h5 heading!</h5><p>
-</p><h6>It&#x27;s h6 heading!</h6><h2>list_plugin()</h2><h3>List Block Constructor</h3><p>Example:</p><ul><li>It&#x27;s a list</li><li>Another Entry</li></ul><h2>math_plugin()</h2><h3>Math Block Constructor</h3><p>Example:</p><div class="math-block">\sum\limits_{x=0}^{\infty} \frac{1}{x^2}
-</div><h3>Math Decorator</h3><p>Example:</p><p>WLOG <span class="math-inline">x \le y \le z</span>, we can show that ...</p><h2>quotation_plugin()</h2><h3>Blockquote Block Constructor</h3><p>Example:</p><blockquote><p>&quot;Was it a cat I saw?&quot;</p><p>Well, probably not.</p></blockquote><h2>youtube_plugin()</h2><h3>YouTube Embed Block Constructor</h3><p>Example:</p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen frameborder="0" height="315" src="https://www.youtube.com/embed/hOzbco2EcYQ" title="YouTube video player" width="560"></iframe><h2>emphasize_plugin()</h2><h3>Emphasize(bold, italic, underline, strikethrough) Decorators</h3><p><b>Bold</b>, <i>Italic</i>, <u>Underline</u>, <s>Strikethrough</s></p><p>You can <i><b>combine</b></i> <u><b>together</b></u>.</p>
-        </div>
-    </main>
+```</pre>
+            </td>
+            <td>
+        <div class="code-block" data-language="javascript">fetch(&#x27;https:&#x2f;&#x2f;example.com&#x27;)
+    .then(res =&gt; res.json())
+    .then(res =&gt; console.log(res));
+</div>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>### Code Decorator</pre>
+            </td>
+            <td>
+        <h3>Code Decorator</h3>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>Example:</pre>
+            </td>
+            <td>
+        <p>Example:</p>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>[&#x27;\n&#x27; .code]</pre>
+            </td>
+            <td>
+        <p><code>&#x27;\n&#x27;</code></p>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>## heading_plugin()</pre>
+            </td>
+            <td>
+        <h2>heading_plugin()</h2>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>### 1~6 Level Heading Block Constructor</pre>
+            </td>
+            <td>
+        <h3>1~6 Level Heading Block Constructor</h3>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>Example:</pre>
+            </td>
+            <td>
+        <p>Example:</p>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>##### It&#x27;s h5 heading!</pre>
+            </td>
+            <td>
+        <h5>It&#x27;s h5 heading!</h5>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>###### It&#x27;s h6 heading!</pre>
+            </td>
+            <td>
+        <h6>It&#x27;s h6 heading!</h6>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>## list_plugin()</pre>
+            </td>
+            <td>
+        <h2>list_plugin()</h2>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>### List Block Constructor</pre>
+            </td>
+            <td>
+        <h3>List Block Constructor</h3>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>Example:</pre>
+            </td>
+            <td>
+        <p>Example:</p>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>- It&#x27;s a list
+- Another Entry
+
+</pre>
+            </td>
+            <td>
+        <ul><li>It&#x27;s a list</li><li>Another Entry</li></ul>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>## math_plugin()</pre>
+            </td>
+            <td>
+        <h2>math_plugin()</h2>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>### Math Block Constructor</pre>
+            </td>
+            <td>
+        <h3>Math Block Constructor</h3>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>Example:</pre>
+            </td>
+            <td>
+        <p>Example:</p>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>$$
+\sum\limits_{x=0}^{\infty} \frac{1}{x^2}
+$$</pre>
+            </td>
+            <td>
+        <div class="math-block">\sum\limits_{x=0}^{\infty} \frac{1}{x^2}
+</div>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>### Math Decorator</pre>
+            </td>
+            <td>
+        <h3>Math Decorator</h3>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>Example:</pre>
+            </td>
+            <td>
+        <p>Example:</p>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>WLOG [x \le y \le z .math], we can show that ...</pre>
+            </td>
+            <td>
+        <p>WLOG <span class="math-inline">x \le y \le z</span>, we can show that ...</p>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>## quotation_plugin()</pre>
+            </td>
+            <td>
+        <h2>quotation_plugin()</h2>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>### Blockquote Block Constructor</pre>
+            </td>
+            <td>
+        <h3>Blockquote Block Constructor</h3>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>Example:</pre>
+            </td>
+            <td>
+        <p>Example:</p>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>&gt; &quot;Was it a cat I saw?&quot;
+&gt;
+&gt; Well, probably not.
+
+</pre>
+            </td>
+            <td>
+        <blockquote><p>&quot;Was it a cat I saw?&quot;</p><p>Well, probably not.</p></blockquote>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>## youtube_plugin()</pre>
+            </td>
+            <td>
+        <h2>youtube_plugin()</h2>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>### YouTube Embed Block Constructor</pre>
+            </td>
+            <td>
+        <h3>YouTube Embed Block Constructor</h3>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>Example:</pre>
+            </td>
+            <td>
+        <p>Example:</p>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>| youtube hOzbco2EcYQ</pre>
+            </td>
+            <td>
+        <iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen frameborder="0" height="315" src="https://www.youtube.com/embed/hOzbco2EcYQ" title="YouTube video player" width="560"></iframe>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>## emphasize_plugin()</pre>
+            </td>
+            <td>
+        <h2>emphasize_plugin()</h2>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>### Emphasize(bold, italic, underline, strikethrough) Decorators</pre>
+            </td>
+            <td>
+        <h3>Emphasize(bold, italic, underline, strikethrough) Decorators</h3>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>[Bold .bold], [Italic .italic], [Underline .underline], [Strikethrough .strikethrough]</pre>
+            </td>
+            <td>
+        <p><b>Bold</b>, <i>Italic</i>, <u>Underline</u>, <s>Strikethrough</s></p>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>You can [combine .bold .italic] [together .bold .underline].</pre>
+            </td>
+            <td>
+        <p>You can <i><b>combine</b></i> <u><b>together</b></u>.</p>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>## icon_plugin()</pre>
+            </td>
+            <td>
+        <h2>icon_plugin()</h2>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>### Icon Inline Constructor</pre>
+            </td>
+            <td>
+        <h3>Icon Inline Constructor</h3>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>the solved.ac rating of asdhugh1 is [#icon(&quot;https:&#x2f;&#x2f;static.solved.ac&#x2f;tier_small&#x2f;15.svg&quot;)]1524</pre>
+            </td>
+            <td>
+        <p>the solved.ac rating of asdhugh1 is <img class="icon" src="https://static.solved.ac/tier_small/15.svg"></img>1524</p>
+            </td>
+        </tr>
+        
+    </table>
 </body>
 
 </html>

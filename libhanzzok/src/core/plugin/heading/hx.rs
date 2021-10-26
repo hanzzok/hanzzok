@@ -1,7 +1,10 @@
 use crate::{
     api::BlockConstructorRule,
     codegen::{Context, HtmlNode, Walker},
-    core::ast::{BlockConstructorForm, InlineObjectNode},
+    core::{
+        ast::{BlockConstructorForm, InlineObjectNode},
+        plugin::heading::heading_meta::{Heading, HeadingList},
+    },
 };
 
 pub struct HxBlockConstructorRule {
@@ -24,6 +27,18 @@ impl BlockConstructorRule for HxBlockConstructorRule {
         _param: Option<String>,
         _: Vec<Vec<InlineObjectNode>>,
     ) -> HtmlNode {
-        HtmlNode::create_tag(format!("h{}", self.depth), &context.walk(main_text))
+        let main_text = context.walk(main_text);
+
+        let mut meta: HeadingList = context.load_meta_or_default("heading", "list");
+        meta.values.push(Heading {
+            name: main_text
+                .iter()
+                .map(|node| node.clone().into_plain_text(&context))
+                .collect(),
+            depth: self.depth,
+        });
+        context.save_meta("heading", "list", meta).unwrap();
+
+        HtmlNode::create_tag(format!("h{}", self.depth), &main_text)
     }
 }
