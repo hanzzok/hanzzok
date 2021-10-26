@@ -54,7 +54,7 @@ pub fn parse_block_constructor_basic(p: HanzzokParser) -> ParseResult<BlockConst
 
     let (p, name) = many1(satisfy_transform(|t| match &t.kind {
         TokenKind::Word(w) => Some(w.clone()),
-        TokenKind::PunctuationsOther(w) => Some(w.clone()),
+        TokenKind::PunctuationHyphenMinus => Some("-".to_owned()),
         _ => None,
     }))(p)?;
 

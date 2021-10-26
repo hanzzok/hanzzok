@@ -95,17 +95,18 @@ pub fn parse_decorator_chain(p: HanzzokParser) -> ParseResult<DecoratorChainNode
         map(
             tuple((
                 tag(TokenKind::PunctuationFullStop),
-                satisfy_transform(|t| match &t.kind {
+                many1(satisfy_transform(|t| match &t.kind {
                     TokenKind::Word(w) => Some(w.clone()),
+                    TokenKind::PunctuationHyphenMinus => Some("-".to_owned()),
                     _ => None,
-                }),
+                })),
                 opt(parse_decorator_params),
             )),
             |(dot, name, params)| DecoratorNode {
                 span: dot
                     .span
                     .joined_opt(params.as_ref().and_then(|params| params.last())),
-                name: name.1,
+                name: name.into_iter().map(|(_, name)| name).collect(),
                 params: params.map(|params| {
                     let len = params.len();
                     params

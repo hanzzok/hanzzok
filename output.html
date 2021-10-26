@@ -66,6 +66,15 @@
         .table-of-contents ol {
             margin-bottom: 0;
         }
+        kbd.system-text > samp {
+            font-weight: bold;
+            font-family: sans-serif;
+        }
+        kbd.key {
+            background: #e2e2e2;
+            padding: 0.1em 0.5em;
+            border-radius: 0.2em;
+        }
     </style>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.18/dist/katex.min.css" integrity="sha384-zTROYFVGOfTw7JV7KUu8udsvW2fx4lWOsCEDqhBreBwlHI4ioVRtmIvEThzJHGET" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.18/dist/katex.min.js" integrity="sha384-GxNFqL3r9uRJQhR+47eDxuPoNE7yLftQM8LcxzgS4HT73tp970WS/wV5p8UzCOmb" crossorigin="anonymous"></script>
@@ -109,27 +118,10 @@
 
         <tr>
             <td>
-                <pre># Registered Plugins</pre>
+                <pre># Showcase</pre>
             </td>
             <td>
-        <h1>Registered Plugins</h1>
-            </td>
-        </tr>
-        
-        <tr>
-            <td>
-                <pre>- code
-- heading
-- list
-- math
-- quotation
-- youtube
-- emphasize
-
-</pre>
-            </td>
-            <td>
-        <ul><li>code</li><li>heading</li><li>list</li><li>math</li><li>quotation</li><li>youtube</li><li>emphasize</li></ul>
+        <h1>Showcase</h1>
             </td>
         </tr>
         
@@ -138,7 +130,7 @@
                 <pre>| table-of-contents</pre>
             </td>
             <td>
-        <div class="table-of-contents"><ol><li>Registered Plugins<ol><li>code_plugin()<ol><li>Code Block Constructor<ol></ol></li><li>Code Decorator<ol></ol></li></ol></li><li>heading_plugin()<ol><li>1~6 Level Heading Block Constructor<ol></ol></li></ol></li><li>list_plugin()<ol><li>List Block Constructor<ol></ol></li></ol></li><li>math_plugin()<ol><li>Math Block Constructor<ol></ol></li><li>Math Decorator<ol></ol></li></ol></li><li>quotation_plugin()<ol><li>Blockquote Block Constructor<ol></ol></li></ol></li><li>youtube_plugin()<ol><li>YouTube Embed Block Constructor<ol></ol></li></ol></li><li>emphasize_plugin()<ol><li>Emphasize(bold, italic, underline, strikethrough) Decorators<ol></ol></li></ol></li><li>icon_plugin()<ol><li>Icon Inline Constructor<ol></ol></li></ol></li></ol></li></ol></div>
+        <div class="table-of-contents"><ol><li>Showcase<ol><li>code_plugin()<ol><li>Code Block Constructor<ol></ol></li><li>Code Decorator<ol></ol></li></ol></li><li>heading_plugin()<ol><li>1~6 Level Heading Block Constructor<ol></ol></li></ol></li><li>list_plugin()<ol><li>List Block Constructor<ol></ol></li></ol></li><li>math_plugin()<ol><li>Math Block Constructor<ol></ol></li><li>Math Decorator<ol></ol></li></ol></li><li>quotation_plugin()<ol><li>Blockquote Block Constructor<ol></ol></li></ol></li><li>youtube_plugin()<ol><li>YouTube Embed Block Constructor<ol></ol></li></ol></li><li>emphasize_plugin()<ol><li>Emphasize(bold, italic, underline, strikethrough) Decorators<ol></ol></li></ol></li><li>icon_plugin()<ol><li>Icon Inline Constructor<ol></ol></li></ol></li><li>input_guide_plugin()<ol><li>System Text Decorator<ol></ol></li><li>Key Inline Constructor<ol></ol></li><li>Key Combo Inline Constructor<ol></ol></li></ol></li></ol></li></ol></div>
             </td>
         </tr>
         
@@ -157,15 +149,6 @@
             </td>
             <td>
         <h3>Code Block Constructor</h3>
-            </td>
-        </tr>
-        
-        <tr>
-            <td>
-                <pre>Example:</pre>
-            </td>
-            <td>
-        <p>Example:</p>
             </td>
         </tr>
         
@@ -196,15 +179,6 @@ fetch(&#x27;https:&#x2f;&#x2f;example.com&#x27;)
         
         <tr>
             <td>
-                <pre>Example:</pre>
-            </td>
-            <td>
-        <p>Example:</p>
-            </td>
-        </tr>
-        
-        <tr>
-            <td>
                 <pre>[&#x27;\n&#x27; .code]</pre>
             </td>
             <td>
@@ -227,15 +201,6 @@ fetch(&#x27;https:&#x2f;&#x2f;example.com&#x27;)
             </td>
             <td>
         <h3>1~6 Level Heading Block Constructor</h3>
-            </td>
-        </tr>
-        
-        <tr>
-            <td>
-                <pre>Example:</pre>
-            </td>
-            <td>
-        <p>Example:</p>
             </td>
         </tr>
         
@@ -277,15 +242,6 @@ fetch(&#x27;https:&#x2f;&#x2f;example.com&#x27;)
         
         <tr>
             <td>
-                <pre>Example:</pre>
-            </td>
-            <td>
-        <p>Example:</p>
-            </td>
-        </tr>
-        
-        <tr>
-            <td>
                 <pre>- It&#x27;s a list
 - Another Entry
 
@@ -316,15 +272,6 @@ fetch(&#x27;https:&#x2f;&#x2f;example.com&#x27;)
         
         <tr>
             <td>
-                <pre>Example:</pre>
-            </td>
-            <td>
-        <p>Example:</p>
-            </td>
-        </tr>
-        
-        <tr>
-            <td>
                 <pre>$$
 \sum\limits_{x=0}^{\infty} \frac{1}{x^2}
 $$</pre>
@@ -341,15 +288,6 @@ $$</pre>
             </td>
             <td>
         <h3>Math Decorator</h3>
-            </td>
-        </tr>
-        
-        <tr>
-            <td>
-                <pre>Example:</pre>
-            </td>
-            <td>
-        <p>Example:</p>
             </td>
         </tr>
         
@@ -382,15 +320,6 @@ $$</pre>
         
         <tr>
             <td>
-                <pre>Example:</pre>
-            </td>
-            <td>
-        <p>Example:</p>
-            </td>
-        </tr>
-        
-        <tr>
-            <td>
                 <pre>&gt; &quot;Was it a cat I saw?&quot;
 &gt;
 &gt; Well, probably not.
@@ -417,15 +346,6 @@ $$</pre>
             </td>
             <td>
         <h3>YouTube Embed Block Constructor</h3>
-            </td>
-        </tr>
-        
-        <tr>
-            <td>
-                <pre>Example:</pre>
-            </td>
-            <td>
-        <p>Example:</p>
             </td>
         </tr>
         
@@ -498,6 +418,69 @@ $$</pre>
             </td>
             <td>
         <p>the solved.ac rating of asdhugh1 is <img class="icon" src="https://static.solved.ac/tier_small/15.svg"></img>1524</p>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>## input_guide_plugin()</pre>
+            </td>
+            <td>
+        <h2>input_guide_plugin()</h2>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>### System Text Decorator</pre>
+            </td>
+            <td>
+        <h3>System Text Decorator</h3>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>Select [File .system-text] &gt; [Save .system-text].</pre>
+            </td>
+            <td>
+        <p>Select <kbd class="system-text"><samp>File</samp></kbd> &gt; <kbd class="system-text"><samp>Save</samp></kbd>.</p>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>### Key Inline Constructor</pre>
+            </td>
+            <td>
+        <h3>Key Inline Constructor</h3>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>Press [#key(&quot;Enter&quot;)] to continue.</pre>
+            </td>
+            <td>
+        <p>Press <kbd class="key">Enter</kbd> to continue.</p>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>### Key Combo Inline Constructor</pre>
+            </td>
+            <td>
+        <h3>Key Combo Inline Constructor</h3>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>Press [#key-combo([&quot;Ctrl&quot;, &quot;Space&quot;])] for auto-completion.</pre>
+            </td>
+            <td>
+        <p>Press <kbd class="key-combo"><kbd class="key">Ctrl</kbd> + <kbd class="key">Space</kbd></kbd> for auto-completion.</p>
             </td>
         </tr>
         

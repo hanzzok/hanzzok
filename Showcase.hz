@@ -1,20 +1,10 @@
-# Registered Plugins
-
-- code
-- heading
-- list
-- math
-- quotation
-- youtube
-- emphasize
+# Showcase
 
 | table-of-contents
 
 ## code_plugin()
 
 ### Code Block Constructor
-
-Example:
 
 ``` javascript
 fetch('https://example.com')
@@ -24,15 +14,11 @@ fetch('https://example.com')
 
 ### Code Decorator
 
-Example:
-
 ['\n' .code]
 
 ## heading_plugin()
 
 ### 1~6 Level Heading Block Constructor
-
-Example:
 
 ##### It's h5 heading!
 ###### It's h6 heading!
@@ -41,8 +27,6 @@ Example:
 
 ### List Block Constructor
 
-Example:
-
 - It's a list
 - Another Entry
 
@@ -50,23 +34,17 @@ Example:
 
 ### Math Block Constructor
 
-Example:
-
 $$
 \sum\limits_{x=0}^{\infty} \frac{1}{x^2}
 $$
 
 ### Math Decorator
 
-Example:
-
 WLOG [x \le y \le z .math], we can show that ...
 
 ## quotation_plugin()
 
 ### Blockquote Block Constructor
-
-Example:
 
 > "Was it a cat I saw?"
 >
@@ -75,8 +53,6 @@ Example:
 ## youtube_plugin()
 
 ### YouTube Embed Block Constructor
-
-Example:
 
 | youtube hOzbco2EcYQ
 
@@ -93,3 +69,17 @@ You can [combine .bold .italic] [together .bold .underline].
 ### Icon Inline Constructor
 
 the solved.ac rating of asdhugh1 is [#icon("https://static.solved.ac/tier_small/15.svg")]1524
+
+## input_guide_plugin()
+
+### System Text Decorator
+
+Select [File .system-text] > [Save .system-text].
+
+### Key Inline Constructor
+
+Press [#key("Enter")] to continue.
+
+### Key Combo Inline Constructor
+
+Press [#key-combo(["Ctrl", "Space"])] for auto-completion.

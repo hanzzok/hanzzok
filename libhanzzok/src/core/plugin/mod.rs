@@ -5,20 +5,22 @@ use crate::api::{BlockConstructorRule, DecoratorRule, InlineConstructorRule};
 pub use code::code_plugin;
 pub use emphasize::emphasize_plugin;
 pub use heading::heading_plugin;
+pub use icon::icon_plugin;
+pub use input_guide::input_guide_plugin;
 pub use list::list_plugin;
 pub use math::math_plugin;
 pub use quotation::quotation_plugin;
-pub use icon::icon_plugin;
 pub use youtube::youtube_plugin;
 
 mod code;
 mod emphasize;
 mod heading;
+mod icon;
+mod input_guide;
 mod list;
 mod math;
 mod quotation;
 mod youtube;
-mod icon;
 
 pub struct Plugin {
     pub(crate) block_constructors: Vec<Rc<dyn BlockConstructorRule>>,

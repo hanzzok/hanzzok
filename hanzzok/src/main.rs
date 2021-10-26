@@ -3,8 +3,8 @@ use std::{fs::File, io::Write};
 use libhanzzok::{
     codegen::compile_html_with_hint,
     core::{
-        ast::Raw, code_plugin, emphasize_plugin, heading_plugin, icon_plugin, list_plugin,
-        math_plugin, quotation_plugin, youtube_plugin, Compiler,
+        ast::Raw, code_plugin, emphasize_plugin, heading_plugin, icon_plugin, input_guide_plugin,
+        list_plugin, math_plugin, quotation_plugin, youtube_plugin, Compiler,
     },
     escape,
     syntax::{parse_root, HanzzokTokenizer},
@@ -21,7 +21,8 @@ fn main() -> eyre::Result<()> {
         .with(code_plugin())
         .with(youtube_plugin())
         .with(emphasize_plugin())
-        .with(icon_plugin());
+        .with(icon_plugin())
+        .with(input_guide_plugin());
 
     let tokenizer = HanzzokTokenizer::from_source(source);
     let tokens: Vec<_> = tokenizer.collect();
@@ -96,6 +97,15 @@ fn main() -> eyre::Result<()> {
         }}
         .table-of-contents ol {{
             margin-bottom: 0;
+        }}
+        kbd.system-text > samp {{
+            font-weight: bold;
+            font-family: sans-serif;
+        }}
+        kbd.key {{
+            background: #e2e2e2;
+            padding: 0.1em 0.5em;
+            border-radius: 0.2em;
         }}
     </style>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.18/dist/katex.min.css" integrity="sha384-zTROYFVGOfTw7JV7KUu8udsvW2fx4lWOsCEDqhBreBwlHI4ioVRtmIvEThzJHGET" crossorigin="anonymous">

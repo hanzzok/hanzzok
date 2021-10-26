@@ -1,3 +1,5 @@
+use nom::multi::many1;
+
 use crate::{
     core::ast::InlineConstructorNode,
     syntax::{parse::nom_ext::satisfy_transform, Token, TokenKind},
@@ -21,10 +23,13 @@ pub fn parse_inline_constructor(p: HanzzokParser) -> ParseResult<InlineConstruct
     let tt = p.create_tracker();
     let (p, _) = tag(TokenKind::PunctuationNumberSign)(p)?;
 
-    let (p, (_, name)) = satisfy_transform(|t| match &t.kind {
+    let (p, name) = many1(satisfy_transform(|t| match &t.kind {
         TokenKind::Word(w) => Some(w.clone()),
+        TokenKind::PunctuationHyphenMinus => Some("-".to_owned()),
         _ => None,
-    })(p)?;
+    }))(p)?;
+
+    let name: String = name.into_iter().map(|(_, name)| name).collect();
 
     let (p, params) = parse_inline_constructor_params(p)?;
 

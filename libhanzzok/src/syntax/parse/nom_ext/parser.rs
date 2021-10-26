@@ -73,6 +73,7 @@ impl BlockConstructorNameParser {
                     | TokenKind::PunctuationNumberSign
                     | TokenKind::PunctuationLeftParenthesis
                     | TokenKind::PunctuationRightParenthesis
+                    | TokenKind::PunctuationHyphenMinus
                     | TokenKind::PunctuationFullStop
                     | TokenKind::PunctuationReverseSolidus
                     | TokenKind::PunctuationLeftSquareBracket
