@@ -194,7 +194,7 @@ dependencies = [
  "once_cell",
  "pretty_assertions",
  "serde",
- "serde_hzdata",
+ "serde_hzdata 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "thiserror",
  "toml",
  "v_htmlescape",
@@ -365,6 +365,18 @@ version = "0.1.0"
 dependencies = [
  "nom",
  "pretty_assertions",
+ "regex",
+ "serde",
+ "thiserror",
+]
+
+[[package]]
+name = "serde_hzdata"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0808df71b5847f47f0b57e0d89f7be37c42ff99580735d9f608d618ffe491ed7"
+dependencies = [
+ "nom",
  "regex",
  "serde",
  "thiserror",
