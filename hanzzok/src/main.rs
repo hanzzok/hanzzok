@@ -101,6 +101,10 @@ fn main() -> eyre::Result<()> {
         kbd.system-text > samp {{
             font-weight: bold;
             font-family: sans-serif;
+            display: inline-block;
+        }}
+        kbd.system-text > samp::first-letter {{
+            text-decoration: underline;
         }}
         kbd.key {{
             background: #e2e2e2;
