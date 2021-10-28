@@ -3,7 +3,7 @@ use std::io::{self, Write};
 use crate::core::{ast::HanzzokAstNode, Compiler};
 
 pub use self::context::Context;
-pub use self::html::HtmlNode;
+pub use self::html::{HtmlNode, HtmlNodeRef};
 pub use self::walker::Walker;
 
 mod context;

@@ -6,11 +6,23 @@ use std::{
 
 use super::Context;
 
+#[derive(Debug, serde::Serialize, serde::Deserialize)]
+pub struct HtmlNodeRef {
+    id: usize,
+}
+
+impl HtmlNodeRef {
+    pub fn load_from<'a>(&self, context: &'a Context) -> &'a HtmlNode {
+        context.load_html_node(self.id).unwrap_or(&HtmlNode::Empty)
+    }
+}
+
 #[derive(Clone)]
 pub enum HtmlNode {
     Tag(HtmlTagNode),
     Text(String),
     Lazy(Rc<Box<dyn Fn(&Context) -> HtmlNode>>),
+    Empty,
 }
 
 impl HtmlNode {
@@ -37,6 +49,11 @@ impl HtmlNode {
         HtmlNode::Lazy(Rc::new(Box::new(f)))
     }
 
+    pub fn into_ref(self, context: &mut Context) -> HtmlNodeRef {
+        let id = context.save_html_node(self);
+        HtmlNodeRef { id }
+    }
+
     pub fn into_plain_text(self, context: &Context) -> String {
         match self {
             HtmlNode::Text(text) => text,
@@ -45,6 +62,7 @@ impl HtmlNode {
                 .map(|node| node.into_plain_text(context))
                 .collect(),
             HtmlNode::Lazy(f) => f(context).into_plain_text(context),
+            HtmlNode::Empty => "".to_owned(),
         }
     }
 
@@ -60,6 +78,7 @@ impl HtmlNode {
             HtmlNode::Tag(node) => node.write(context, w),
             HtmlNode::Text(data) => write!(w, "{}", data),
             HtmlNode::Lazy(f) => f(context).write(context, w),
+            HtmlNode::Empty => Ok(()),
         }
     }
 }

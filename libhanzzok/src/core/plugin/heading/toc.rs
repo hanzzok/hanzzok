@@ -1,4 +1,4 @@
-use std::collections::VecDeque;
+use std::{collections::VecDeque, iter::once};
 
 use crate::{
     api::BlockConstructorRule,
@@ -33,7 +33,7 @@ impl BlockConstructorRule for TocBlockConstructorRule {
             let mut stack = VecDeque::new();
             stack.push_back((
                 Heading {
-                    name: "".to_owned(),
+                    name: Vec::new(),
                     depth: 0,
                 },
                 HtmlNode::create_tag_builder("ol"),
@@ -53,7 +53,12 @@ impl BlockConstructorRule for TocBlockConstructorRule {
 
                         back.append(HtmlNode::create_tag(
                             "li",
-                            &[HtmlNode::create_text(pop_heading.name), pop.build()],
+                            &pop_heading
+                                .name
+                                .into_iter()
+                                .map(|node_ref| node_ref.load_from(context).clone())
+                                .chain(once(pop.build()))
+                                .collect::<Vec<_>>(),
                         ));
 
                         if back_heading.depth < heading.depth {
@@ -67,7 +72,7 @@ impl BlockConstructorRule for TocBlockConstructorRule {
                 for depth in depth..(heading.depth - 1) {
                     stack.push_back((
                         Heading {
-                            name: "".to_owned(),
+                            name: Vec::new(),
                             depth,
                         },
                         HtmlNode::create_tag_builder("ol"),
@@ -83,7 +88,12 @@ impl BlockConstructorRule for TocBlockConstructorRule {
 
                 back.append(HtmlNode::create_tag(
                     "li",
-                    &[HtmlNode::create_text(pop_heading.name), pop.build()],
+                    &pop_heading
+                        .name
+                        .into_iter()
+                        .map(|node_ref| node_ref.load_from(context).clone())
+                        .chain(once(pop.build()))
+                        .collect::<Vec<_>>(),
                 ));
 
                 if back_heading.depth <= 0 {

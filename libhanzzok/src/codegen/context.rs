@@ -5,9 +5,13 @@ use serde_hzdata::HzdataValue;
 
 use crate::core::Compiler;
 
+use super::HtmlNode;
+
 pub struct Context<'a> {
     pub(crate) compiler: &'a Compiler,
-    pub meta: HashMap<String, HzdataValue>,
+    meta: HashMap<String, HzdataValue>,
+    html_nodes_id_counter: usize,
+    html_nodes: HashMap<usize, HtmlNode>,
 }
 
 impl<'a> Context<'a> {
@@ -15,6 +19,8 @@ impl<'a> Context<'a> {
         Context {
             compiler,
             meta: HashMap::new(),
+            html_nodes_id_counter: 0,
+            html_nodes: HashMap::new(),
         }
     }
 
@@ -53,5 +59,16 @@ impl<'a> Context<'a> {
         );
 
         Ok(())
+    }
+
+    pub fn save_html_node(&mut self, node: HtmlNode) -> usize {
+        let id = self.html_nodes_id_counter;
+        self.html_nodes.insert(id, node);
+        self.html_nodes_id_counter += 1;
+        id
+    }
+
+    pub fn load_html_node(&self, id: usize) -> Option<&HtmlNode> {
+        self.html_nodes.get(&id)
     }
 }

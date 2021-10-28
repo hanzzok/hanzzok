@@ -33,7 +33,7 @@ impl BlockConstructorRule for HxBlockConstructorRule {
         meta.values.push(Heading {
             name: main_text
                 .iter()
-                .map(|node| node.clone().into_plain_text(&context))
+                .map(|node| node.clone().into_ref(context))
                 .collect(),
             depth: self.depth,
         });
