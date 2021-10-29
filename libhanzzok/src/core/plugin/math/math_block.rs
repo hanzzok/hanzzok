@@ -1,3 +1,5 @@
+use serde_hzdata::HzdataValue;
+
 use crate::{
     api::BlockConstructorRule,
     codegen::{Context, HtmlNode, Walker},
@@ -22,8 +24,8 @@ impl BlockConstructorRule for MathBlockConstructorRule {
     fn apply(
         &self,
         context: &mut Context,
-        _: Vec<InlineObjectNode>,
-        _: Option<String>,
+        _main_text: Vec<InlineObjectNode>,
+        _param: Option<HzdataValue>,
         multiline_text: Vec<Vec<InlineObjectNode>>,
     ) -> HtmlNode {
         HtmlNode::create_tag_builder("div")

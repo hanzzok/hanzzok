@@ -1,3 +1,5 @@
+use serde_hzdata::HzdataValue;
+
 use crate::codegen::{Context, HtmlNode};
 
 pub trait DecoratorRule {
@@ -11,6 +13,6 @@ pub trait DecoratorRule {
         &self,
         context: &mut Context,
         target: Vec<HtmlNode>,
-        param: Option<String>,
+        param: Option<HzdataValue>,
     ) -> Vec<HtmlNode>;
 }

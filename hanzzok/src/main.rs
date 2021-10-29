@@ -4,7 +4,7 @@ use libhanzzok::{
     codegen::compile_html_with_hint,
     core::{
         ast::Raw, code_plugin, emphasize_plugin, heading_plugin, icon_plugin, input_guide_plugin,
-        list_plugin, math_plugin, quotation_plugin, youtube_plugin, Compiler,
+        link_plugin, list_plugin, math_plugin, quotation_plugin, youtube_plugin, Compiler,
     },
     escape,
     syntax::{parse_root, HanzzokTokenizer},
@@ -22,7 +22,8 @@ fn main() -> eyre::Result<()> {
         .with(youtube_plugin())
         .with(emphasize_plugin())
         .with(icon_plugin())
-        .with(input_guide_plugin());
+        .with(input_guide_plugin())
+        .with(link_plugin());
 
     let tokenizer = HanzzokTokenizer::from_source(source);
     let tokens: Vec<_> = tokenizer.collect();
@@ -110,6 +111,31 @@ fn main() -> eyre::Result<()> {
             background: #e2e2e2;
             padding: 0.1em 0.5em;
             border-radius: 0.2em;
+        }}
+
+        a {{
+            color: hsl(210 65% 70%);
+        }}
+        a:visited {{
+            color: hsl(210 0% 70%);
+        }}
+        
+        @media (prefers-color-scheme: dark) {{
+            html {{
+                background: #2b2b2b;
+            }}
+            html, p, ul, ol {{
+                color: #e2e2e2;
+            }}
+            blockquote {{
+                background: #4b4b4b;
+                border: 4px dashed #6b6b6b;
+                border-left: 8px solid #8b8b8b;
+            }}
+            kbd.key {{
+                background: #4b4b4b;
+                color: #e2e2e2;
+            }}
         }}
     </style>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.18/dist/katex.min.css" integrity="sha384-zTROYFVGOfTw7JV7KUu8udsvW2fx4lWOsCEDqhBreBwlHI4ioVRtmIvEThzJHGET" crossorigin="anonymous">

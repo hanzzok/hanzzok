@@ -1,3 +1,4 @@
+use serde_hzdata::HzdataValue;
 use v_htmlescape::escape;
 
 use crate::{
@@ -26,7 +27,7 @@ impl BlockConstructorRule for CodeBlockConstructorRule {
         &self,
         _context: &mut Context,
         main_text: Vec<InlineObjectNode>,
-        _: Option<String>,
+        _param: Option<HzdataValue>,
         multiline_text: Vec<Vec<InlineObjectNode>>,
     ) -> HtmlNode {
         let mut source = String::new();

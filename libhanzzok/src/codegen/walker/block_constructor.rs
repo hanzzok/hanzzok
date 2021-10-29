@@ -18,6 +18,11 @@ impl Walker<BlockConstructorNode> for Context<'_> {
                 )];
             }
         };
-        vec![rule.apply(self, node.main_text, node.param, node.multiline_text)]
+        vec![rule.apply(
+            self,
+            node.main_text,
+            node.param.and_then(|s| serde_hzdata::from_str(&s).ok()),
+            node.multiline_text,
+        )]
     }
 }

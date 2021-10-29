@@ -1,3 +1,5 @@
+use serde_hzdata::HzdataValue;
+
 use crate::{
     api::BlockConstructorRule,
     codegen::{Context, HtmlNode},
@@ -19,7 +21,7 @@ impl BlockConstructorRule for YouTubeEmbedBlockConstructorRule {
         &self,
         _context: &mut Context,
         main_text: Vec<InlineObjectNode>,
-        _: Option<String>,
+        _param: Option<HzdataValue>,
         _: Vec<Vec<InlineObjectNode>>,
     ) -> HtmlNode {
         HtmlNode::create_tag_builder("iframe")

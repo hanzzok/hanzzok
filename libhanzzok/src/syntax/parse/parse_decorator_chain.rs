@@ -107,15 +107,7 @@ pub fn parse_decorator_chain(p: HanzzokParser) -> ParseResult<DecoratorChainNode
                     .span
                     .joined_opt(params.as_ref().and_then(|params| params.last())),
                 name: name.into_iter().map(|(_, name)| name).collect(),
-                params: params.map(|params| {
-                    let len = params.len();
-                    params
-                        .into_iter()
-                        .take(len - 1)
-                        .skip(1)
-                        .map(|t| t.text)
-                        .collect::<String>()
-                }),
+                params: params.map(|params| params.into_iter().map(|t| t.text).collect::<String>()),
             },
         ),
         skip_any_spaces,

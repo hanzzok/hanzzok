@@ -30,12 +30,23 @@ impl Walker<DecoratorChainNode> for Context<'_> {
         } else {
             self.walk(node.main_text)
         };
+        let mut is_first = true;
         for decorator in node.decorators {
             let rule = match self.compiler.decorator_rules.get(&decorator.name) {
                 Some(rule) => rule,
                 None => continue,
             };
-            nodes = rule.apply(self, nodes, decorator.params);
+            if !is_first && rule.accept_raw_text() {
+                continue;
+            }
+            is_first = false;
+            nodes = rule.apply(
+                self,
+                nodes,
+                decorator
+                    .params
+                    .and_then(|s| serde_hzdata::from_str(&s).ok()),
+            );
         }
         nodes
     }

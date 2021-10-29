@@ -9,4 +9,4 @@ rust-version = "1.56.0"
 [dependencies]
 clap = "3.0.0-beta.4"
 eyre = "0.6.5"
-libhanzzok = "0.1.0"
+libhanzzok = { version = "0.1.0", "path" = "../libhanzzok" }

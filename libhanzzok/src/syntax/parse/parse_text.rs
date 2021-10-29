@@ -17,14 +17,7 @@ use super::{
 pub fn parse_text(p: HanzzokParser) -> ParseResult<TextNode> {
     map(
         many1(alt((
-            satisfy(|t| {
-                matches!(
-                    t.kind,
-                    TokenKind::Word(_)
-                        | TokenKind::PunctuationQuotationMark
-                        | TokenKind::PunctuationsOther(_)
-                )
-            }),
+            satisfy(|t| matches!(t.kind, TokenKind::Word(_) | TokenKind::PunctuationsOther(_))),
             tag(TokenKind::HorizontalSpace),
         ))),
         |tokens| TextNode {

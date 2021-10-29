@@ -1,5 +1,7 @@
 use std::{collections::VecDeque, iter::once};
 
+use serde_hzdata::HzdataValue;
+
 use crate::{
     api::BlockConstructorRule,
     codegen::{Context, HtmlNode},
@@ -24,7 +26,7 @@ impl BlockConstructorRule for TocBlockConstructorRule {
         &self,
         _context: &mut Context,
         _main_text: Vec<InlineObjectNode>,
-        _param: Option<String>,
+        _param: Option<HzdataValue>,
         _: Vec<Vec<InlineObjectNode>>,
     ) -> HtmlNode {
         HtmlNode::create_lazy(|context| {

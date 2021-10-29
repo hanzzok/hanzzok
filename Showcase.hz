@@ -83,3 +83,15 @@ Press [#key("Enter")] to continue.
 ### Key Combo Inline Constructor
 
 Press [#key-combo(["Ctrl", "Space"])] for auto-completion.
+
+## link_plugin()
+
+### Link Decorator
+
+Go [Baekjoon Online Judge .link("https://www.acmicpc.net/")].
+
+### Link Ref
+
+[A .link-ref] and [A .link-ref] and [A .link-ref] is the same link reference.
+
+| define-link-ref A "https://google.com/"

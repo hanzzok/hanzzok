@@ -77,13 +77,14 @@ impl<'a, 'de: 'a> de::Deserializer<'de> for &'a mut HzdataDeserializer<'de> {
             }
         } else if let Ok(string) = self.peek_string() {
             visitor.visit_string(string)
-        } else if self.source[0] == b'[' {
+        } else if let Some(b'[') = self.source.first() {
             self.deserialize_seq(visitor)
-        } else if self.source[0] == b'{' {
+        } else if let Some(b'{') = self.source.first() {
             self.deserialize_map(visitor)
         } else {
-            dbg!(self.source);
-            todo!()
+            Err(Error::Custom(
+                "expected a token but it is not present".to_owned(),
+            ))
         }
     }
 

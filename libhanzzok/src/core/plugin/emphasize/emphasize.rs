@@ -1,3 +1,5 @@
+use serde_hzdata::HzdataValue;
+
 use crate::{
     api::DecoratorRule,
     codegen::{Context, HtmlNode},
@@ -17,7 +19,7 @@ impl DecoratorRule for EmphasizeDecoratorRule {
         &self,
         _context: &mut Context,
         target: Vec<HtmlNode>,
-        _param: Option<String>,
+        _param: Option<HzdataValue>,
     ) -> Vec<HtmlNode> {
         vec![HtmlNode::create_tag(&self.tag, &target)]
     }

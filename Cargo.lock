@@ -130,7 +130,7 @@ version = "0.1.0"
 dependencies = [
  "clap",
  "eyre",
- "libhanzzok 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "libhanzzok",
 ]
 
 [[package]]
@@ -194,23 +194,7 @@ dependencies = [
  "once_cell",
  "pretty_assertions",
  "serde",
- "serde_hzdata 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "thiserror",
- "toml",
- "v_htmlescape",
-]
-
-[[package]]
-name = "libhanzzok"
-version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "39d338240342d73b8a2816ba35c788d981a36058dc978b09245f8aa2c6dff9e9"
-dependencies = [
- "logos",
- "nom",
- "once_cell",
- "serde",
- "serde_hzdata 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde_hzdata",
  "thiserror",
  "toml",
  "v_htmlescape",
@@ -381,18 +365,6 @@ version = "0.1.0"
 dependencies = [
  "nom",
  "pretty_assertions",
- "regex",
- "serde",
- "thiserror",
-]
-
-[[package]]
-name = "serde_hzdata"
-version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0808df71b5847f47f0b57e0d89f7be37c42ff99580735d9f608d618ffe491ed7"
-dependencies = [
- "nom",
  "regex",
  "serde",
  "thiserror",

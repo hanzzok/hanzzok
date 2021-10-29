@@ -23,7 +23,7 @@ use super::{
         satisfy_transform, skip_any_spaces, skip_horizontal_spaces, tag,
         BlockConstructorNameParser, HanzzokParser,
     },
-    parse_hzdata::parse_hzdata_paired,
+    parse_hzdata::{parse_hzdata_paired, parse_hzdata_string},
     parse_inline_object::parse_inline_object,
     ParseResult,
 };
@@ -38,11 +38,14 @@ pub fn parse_block_constructor(p: HanzzokParser) -> ParseResult<BlockConstructor
 }
 
 fn parse_block_constructor_params(p: HanzzokParser) -> ParseResult<Vec<Token>> {
-    parse_hzdata_paired(
-        TokenKind::PunctuationLeftCurlyBracket,
-        TokenKind::PunctuationRightCurlyBracket,
-        false,
-    )(p)
+    alt((
+        parse_hzdata_string,
+        parse_hzdata_paired(
+            TokenKind::PunctuationLeftCurlyBracket,
+            TokenKind::PunctuationRightCurlyBracket,
+            false,
+        ),
+    ))(p)
 }
 
 pub fn parse_block_constructor_basic(p: HanzzokParser) -> ParseResult<BlockConstructorNode> {
@@ -65,6 +68,7 @@ pub fn parse_block_constructor_basic(p: HanzzokParser) -> ParseResult<BlockConst
     let (p, main_text) = many0(preceded(
         not(alt((
             tag(TokenKind::PunctuationLeftCurlyBracket),
+            tag(TokenKind::PunctuationQuotationMark),
             tag(TokenKind::VerticalSpace),
         ))),
         parse_inline_object,

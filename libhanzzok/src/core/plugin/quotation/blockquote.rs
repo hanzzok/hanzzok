@@ -1,3 +1,5 @@
+use serde_hzdata::HzdataValue;
+
 use crate::{
     api::BlockConstructorRule,
     codegen::{Context, HtmlNode, Walker},
@@ -19,7 +21,7 @@ impl BlockConstructorRule for BlockquoteBlockConstructorRule {
         &self,
         context: &mut Context,
         _: Vec<InlineObjectNode>,
-        _: Option<String>,
+        _: Option<HzdataValue>,
         multiline_text: Vec<Vec<InlineObjectNode>>,
     ) -> HtmlNode {
         let mut lines = Vec::new();

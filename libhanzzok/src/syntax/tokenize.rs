@@ -71,7 +71,7 @@ pub enum TokenKind {
     #[token("}")]
     PunctuationRightCurlyBracket,
 
-    #[regex(r#"[!"$%&'*+,/:;<=>?@\^_`~]+"#, |lex| lex.slice().to_owned())]
+    #[regex(r#"[!$%&'*+,/:;<=>?@\^_`~]+"#, |lex| lex.slice().to_owned())]
     PunctuationsOther(String),
 
     /*

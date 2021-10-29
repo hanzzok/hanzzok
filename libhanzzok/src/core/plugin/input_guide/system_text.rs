@@ -1,3 +1,5 @@
+use serde_hzdata::HzdataValue;
+
 use crate::{
     api::DecoratorRule,
     codegen::{Context, HtmlNode},
@@ -18,7 +20,7 @@ impl DecoratorRule for SystemTextDecoratorRule {
         &self,
         _context: &mut Context,
         target: Vec<HtmlNode>,
-        _param: Option<String>,
+        _param: Option<HzdataValue>,
     ) -> Vec<HtmlNode> {
         vec![HtmlNode::create_tag_builder("kbd")
             .append(HtmlNode::create_tag("samp", &target))

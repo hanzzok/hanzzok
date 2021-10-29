@@ -1,3 +1,5 @@
+use serde_hzdata::HzdataValue;
+
 use crate::{
     codegen::{Context, HtmlNode},
     core::ast::{BlockConstructorForm, InlineObjectNode},
@@ -16,7 +18,7 @@ pub trait BlockConstructorRule {
         &self,
         context: &mut Context,
         main_text: Vec<InlineObjectNode>,
-        param: Option<String>,
+        param: Option<HzdataValue>,
         multiline_text: Vec<Vec<InlineObjectNode>>,
     ) -> HtmlNode;
 }

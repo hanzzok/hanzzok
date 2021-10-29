@@ -1,3 +1,5 @@
+use serde_hzdata::HzdataValue;
+
 use crate::{
     api::BlockConstructorRule,
     codegen::{Context, HtmlNode, Walker},
@@ -24,7 +26,7 @@ impl BlockConstructorRule for HxBlockConstructorRule {
         &self,
         context: &mut Context,
         main_text: Vec<InlineObjectNode>,
-        _param: Option<String>,
+        _param: Option<HzdataValue>,
         _: Vec<Vec<InlineObjectNode>>,
     ) -> HtmlNode {
         let main_text = context.walk(main_text);

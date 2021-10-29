@@ -22,6 +22,7 @@ pub enum HtmlNode {
     Tag(HtmlTagNode),
     Text(String),
     Lazy(Rc<Box<dyn Fn(&Context) -> HtmlNode>>),
+    Collection(Vec<HtmlNode>),
     Empty,
 }
 
@@ -61,6 +62,10 @@ impl HtmlNode {
                 .into_iter()
                 .map(|node| node.into_plain_text(context))
                 .collect(),
+            HtmlNode::Collection(vec) => vec
+                .into_iter()
+                .map(|node| node.into_plain_text(context))
+                .collect(),
             HtmlNode::Lazy(f) => f(context).into_plain_text(context),
             HtmlNode::Empty => "".to_owned(),
         }
@@ -77,6 +82,12 @@ impl HtmlNode {
         match self {
             HtmlNode::Tag(node) => node.write(context, w),
             HtmlNode::Text(data) => write!(w, "{}", data),
+            HtmlNode::Collection(vec) => {
+                for node in vec {
+                    node.write(context, w)?;
+                }
+                Ok(())
+            }
             HtmlNode::Lazy(f) => f(context).write(context, w),
             HtmlNode::Empty => Ok(()),
         }
