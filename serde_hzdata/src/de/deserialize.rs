@@ -122,7 +122,7 @@ impl<'a, 'de: 'a> de::Deserializer<'de> for &'a mut HzdataDeserializer<'de> {
         visitor.visit_str(&self.peek_string()?)
     }
 
-    fn deserialize_string<V>(mut self, visitor: V) -> Result<V::Value, Self::Error>
+    fn deserialize_string<V>(self, visitor: V) -> Result<V::Value, Self::Error>
     where
         V: de::Visitor<'de>,
     {
@@ -187,7 +187,7 @@ impl<'a, 'de: 'a> de::Deserializer<'de> for &'a mut HzdataDeserializer<'de> {
         visitor.visit_seq(seq_access)
     }
 
-    fn deserialize_tuple<V>(self, len: usize, visitor: V) -> Result<V::Value, Self::Error>
+    fn deserialize_tuple<V>(self, _len: usize, visitor: V) -> Result<V::Value, Self::Error>
     where
         V: de::Visitor<'de>,
     {
@@ -196,8 +196,8 @@ impl<'a, 'de: 'a> de::Deserializer<'de> for &'a mut HzdataDeserializer<'de> {
 
     fn deserialize_tuple_struct<V>(
         self,
-        name: &'static str,
-        len: usize,
+        _name: &'static str,
+        _len: usize,
         visitor: V,
     ) -> Result<V::Value, Self::Error>
     where
@@ -216,8 +216,8 @@ impl<'a, 'de: 'a> de::Deserializer<'de> for &'a mut HzdataDeserializer<'de> {
 
     fn deserialize_struct<V>(
         self,
-        name: &'static str,
-        fields: &'static [&'static str],
+        _name: &'static str,
+        _fields: &'static [&'static str],
         visitor: V,
     ) -> Result<V::Value, Self::Error>
     where

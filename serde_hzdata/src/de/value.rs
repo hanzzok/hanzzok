@@ -2,7 +2,7 @@ use std::{collections::HashMap, marker::PhantomData};
 
 use serde::{
     de::{self, DeserializeSeed, Visitor},
-    Deserialize, Deserializer,
+    Deserialize,
 };
 
 use crate::{
@@ -167,7 +167,7 @@ impl<'de> de::Deserializer<'de> for HzdataValue {
             HzdataValue::Float(val) => visitor.visit_f64(val),
             HzdataValue::String(val) => visitor.visit_string(val),
             HzdataValue::RegexText(_) => self.deserialize_newtype_struct("Regex", visitor),
-            HzdataValue::Unit(val) => todo!(),
+            HzdataValue::Unit(_) => todo!(),
             HzdataValue::Array(val) => visitor.visit_seq(HzdataValueSeqAccess::new(val)),
             HzdataValue::Object(val) => visitor.visit_map(HzdataValueMapAccess::new(val)),
             HzdataValue::Nothing => visitor.visit_none(),
@@ -274,8 +274,8 @@ impl<'de> de::Deserializer<'de> for HzdataValue {
 
     fn deserialize_struct<V>(
         self,
-        name: &'static str,
-        fields: &'static [&'static str],
+        _name: &'static str,
+        _fields: &'static [&'static str],
         visitor: V,
     ) -> Result<V::Value, Self::Error>
     where

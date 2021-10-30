@@ -1,8 +1,8 @@
-use std::{collections::HashMap, io::Write};
+use std::collections::HashMap;
 
 use crate::{Error, HzdataValue};
 
-use super::{serialize::HzdataSerialize, value::HzdataValueSerialize};
+use super::value::HzdataValueSerialize;
 
 pub(crate) struct HzdataValueSerializeMap {
     last_key: Option<String>,

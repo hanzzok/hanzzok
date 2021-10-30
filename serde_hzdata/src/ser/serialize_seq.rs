@@ -1,7 +1,4 @@
-use std::{
-    io::Write,
-    ops::{Deref, DerefMut},
-};
+use std::io::Write;
 
 use crate::Error;
 

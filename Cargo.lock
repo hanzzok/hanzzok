@@ -361,7 +361,7 @@ dependencies = [
 
 [[package]]
 name = "serde_hzdata"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "nom",
  "pretty_assertions",

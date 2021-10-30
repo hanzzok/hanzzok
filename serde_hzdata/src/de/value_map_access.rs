@@ -4,13 +4,6 @@ use serde::de;
 
 use crate::{Error, HzdataValue};
 
-#[derive(PartialEq)]
-enum State {
-    First,
-    Rest,
-    Done,
-}
-
 pub struct HzdataValueMapAccess {
     values: Vec<(String, HzdataValue)>,
 }
