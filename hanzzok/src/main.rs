@@ -1,4 +1,4 @@
-use std::{fs::File, io::Write};
+use std::{env, fs, io::Write};
 
 use libhanzzok::{
     codegen::compile_html_with_hint,
@@ -11,7 +11,14 @@ use libhanzzok::{
 };
 
 fn main() -> eyre::Result<()> {
-    let source = include_str!("../../Showcase.hz");
+    let file = env::args()
+        .skip(1)
+        .find(|_| true)
+        .unwrap_or("document.hz".to_owned());
+
+    println!("Will compile {}", file);
+
+    let source = fs::read_to_string(file)?;
 
     let compiler = Compiler::new()
         .with(heading_plugin())
@@ -25,10 +32,10 @@ fn main() -> eyre::Result<()> {
         .with(input_guide_plugin())
         .with(link_plugin());
 
-    let tokenizer = HanzzokTokenizer::from_source(source);
+    let tokenizer = HanzzokTokenizer::from_source(&source);
     let tokens: Vec<_> = tokenizer.collect();
     let nodes = parse_root(tokens, &compiler);
-    let mut f = File::create("./output.html")?;
+    let mut f = fs::File::create("./output.html")?;
     write!(
         &mut f,
         r#"
