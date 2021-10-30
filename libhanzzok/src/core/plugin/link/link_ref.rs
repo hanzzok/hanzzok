@@ -15,7 +15,7 @@ impl DecoratorRule for LinkRefDecoratorRule {
 
     fn apply(
         &self,
-        context: &mut Context,
+        _context: &mut Context,
         target: Vec<HtmlNode>,
         _param: Option<HzdataValue>,
     ) -> Vec<HtmlNode> {
