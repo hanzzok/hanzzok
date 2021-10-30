@@ -2,7 +2,7 @@ use core::fmt;
 
 use super::{LineColumn, Spanned};
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, serde::Serialize, serde::Deserialize)]
 pub struct Span {
     pub start: LineColumn,
     pub end: LineColumn,

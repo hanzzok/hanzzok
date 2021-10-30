@@ -99,11 +99,19 @@ pub enum TokenKind {
     Error,
 }
 
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen::prelude::wasm_bindgen)]
 #[derive(Clone, Debug, PartialEq)]
 pub struct Token {
-    pub kind: TokenKind,
-    pub span: Span,
-    pub text: String,
+    pub(crate) kind: TokenKind,
+    pub(crate) span: Span,
+    pub(crate) text: String,
+}
+
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen::prelude::wasm_bindgen)]
+impl Token {
+    pub fn text(&self) -> String {
+        self.text.clone()
+    }
 }
 
 impl Spanned for Token {
@@ -149,5 +157,40 @@ impl<'a> Iterator for HanzzokTokenizer<'a> {
         };
         let text = self.lexer.slice().to_owned();
         Some(Token { kind, span, text })
+    }
+}
+
+#[cfg(target_arch = "wasm32")]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen::prelude::wasm_bindgen)]
+pub struct HanzzokTokenized {
+    pub(crate) tokens: Vec<Token>,
+}
+
+#[cfg(target_arch = "wasm32")]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen::prelude::wasm_bindgen)]
+impl HanzzokTokenized {
+    pub fn next(&mut self) -> Option<Token> {
+        if self.tokens.len() > 0 {
+            Some(self.tokens.remove(0))
+        } else {
+            None
+        }
+    }
+}
+
+#[cfg(target_arch = "wasm32")]
+impl Iterator for HanzzokTokenized {
+    type Item = Token;
+
+    fn next(&mut self) -> Option<Token> {
+        self.next()
+    }
+}
+
+#[cfg(target_arch = "wasm32")]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen::prelude::wasm_bindgen)]
+pub fn w_tokenize(source: &str) -> HanzzokTokenized {
+    HanzzokTokenized {
+        tokens: HanzzokTokenizer::from_source(source).collect(),
     }
 }

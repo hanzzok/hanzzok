@@ -25,7 +25,7 @@ pub fn compile_html(
     Ok(())
 }
 
-pub fn compile_html_with_hint<'a>(
+pub fn compile_html_nodes<'a>(
     nodes: &'a [HanzzokAstNode],
     compiler: &'a Compiler,
 ) -> (Context<'a>, Vec<(HanzzokAstNode, Vec<HtmlNode>)>) {
@@ -37,4 +37,67 @@ pub fn compile_html_with_hint<'a>(
         .collect();
 
     (context, html_nodes)
+}
+
+#[cfg(target_arch = "wasm32")]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen::prelude::wasm_bindgen)]
+pub fn w_compile_html(
+    nodes: &crate::syntax::HanzzokParsed,
+    compiler: &Compiler,
+) -> Result<String, wasm_bindgen::JsValue> {
+    let mut cursor = io::Cursor::new(Vec::new());
+    match compile_html(
+        &nodes
+            .nodes
+            .iter()
+            .map(|node| node.handle.clone())
+            .collect::<Vec<_>>(),
+        compiler,
+        &mut cursor,
+    ) {
+        Ok(_) => Ok(String::from_utf8_lossy(&cursor.into_inner()).to_string()),
+        Err(e) => Err(wasm_bindgen::JsValue::from_str(&e.to_string())),
+    }
+}
+
+#[cfg(target_arch = "wasm32")]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen::prelude::wasm_bindgen)]
+pub struct HanzzokCompiled {
+    htmls: Vec<String>,
+}
+
+#[cfg(target_arch = "wasm32")]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen::prelude::wasm_bindgen)]
+impl HanzzokCompiled {
+    pub fn next(&mut self) -> Option<String> {
+        if self.htmls.len() > 0 {
+            Some(self.htmls.remove(0))
+        } else {
+            None
+        }
+    }
+}
+
+#[cfg(target_arch = "wasm32")]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen::prelude::wasm_bindgen)]
+pub fn w_compile_html_nodes(
+    nodes: &crate::syntax::HanzzokParsed,
+    compiler: &Compiler,
+) -> Result<HanzzokCompiled, wasm_bindgen::JsValue> {
+    let nodes: Vec<_> = nodes.nodes.iter().map(|node| node.handle.clone()).collect();
+    let (context, nodes) = compile_html_with_hint(&nodes, compiler);
+    Ok(HanzzokCompiled {
+        htmls: nodes
+            .into_iter()
+            .map(|(_, nodes)| {
+                let mut cursor = io::Cursor::new(Vec::new());
+                for node in nodes {
+                    if let Err(e) = node.write(&context, &mut cursor) {
+                        return Err(wasm_bindgen::JsValue::from_str(&e.to_string()));
+                    }
+                }
+                Ok(String::from_utf8_lossy(&cursor.into_inner()).to_string())
+            })
+            .collect::<Result<_, _>>()?,
+    })
 }

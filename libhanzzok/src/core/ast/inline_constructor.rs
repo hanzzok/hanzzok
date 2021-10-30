@@ -7,11 +7,12 @@ use crate::{
 
 use super::Raw;
 
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen::prelude::wasm_bindgen)]
 #[derive(Clone, Debug)]
 pub struct InlineConstructorNode {
-    pub name: String,
-    pub params: Vec<Token>,
-    pub tokens: Vec<Token>,
+    pub(crate) name: String,
+    pub(crate) params: Vec<Token>,
+    pub(crate) tokens: Vec<Token>,
 }
 
 impl Raw for InlineConstructorNode {

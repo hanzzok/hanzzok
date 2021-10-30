@@ -4,6 +4,7 @@ use crate::api::{BlockConstructorRule, DecoratorRule, InlineConstructorRule};
 
 use super::Plugin;
 
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen::prelude::wasm_bindgen)]
 pub struct Compiler {
     pub(crate) block_constructor_rules: HashMap<String, Rc<dyn BlockConstructorRule>>,
     pub(crate) decorator_rules: HashMap<String, Rc<dyn DecoratorRule>>,

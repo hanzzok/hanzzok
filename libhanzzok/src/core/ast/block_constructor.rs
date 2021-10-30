@@ -12,14 +12,15 @@ pub enum BlockConstructorForm {
     Leading,
 }
 
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen::prelude::wasm_bindgen)]
 #[derive(Clone, Debug)]
 pub struct BlockConstructorNode {
-    pub form: BlockConstructorForm,
-    pub name: String,
-    pub main_text: Vec<InlineObjectNode>,
-    pub param: Option<String>,
-    pub multiline_text: Vec<Vec<InlineObjectNode>>,
-    pub tokens: Vec<Token>,
+    pub(crate) form: BlockConstructorForm,
+    pub(crate) name: String,
+    pub(crate) main_text: Vec<InlineObjectNode>,
+    pub(crate) param: Option<String>,
+    pub(crate) multiline_text: Vec<Vec<InlineObjectNode>>,
+    pub(crate) tokens: Vec<Token>,
 }
 
 impl fmt::Display for BlockConstructorNode {

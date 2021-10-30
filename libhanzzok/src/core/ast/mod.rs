@@ -4,6 +4,8 @@ pub use inline_constructor::InlineConstructorNode;
 pub use inline_object::InlineObjectNode;
 pub use raw::Raw;
 pub use text::TextNode;
+#[cfg(target_arch = "wasm32")]
+pub use wasm_support::HanzzokAstNodeWrapper;
 
 use crate::syntax::Token;
 
@@ -13,6 +15,9 @@ mod inline_constructor;
 mod inline_object;
 mod raw;
 mod text;
+
+#[cfg(target_arch = "wasm32")]
+mod wasm_support;
 
 #[derive(Clone, Debug)]
 pub enum HanzzokAstNode {

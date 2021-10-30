@@ -7,11 +7,12 @@ use crate::{
 
 use super::{InlineObjectNode, Raw};
 
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen::prelude::wasm_bindgen)]
 #[derive(Clone, Debug)]
 pub struct DecoratorChainNode {
-    pub main_text: Box<InlineObjectNode>,
-    pub decorators: Vec<DecoratorNode>,
-    pub tokens: Vec<Token>,
+    pub(crate) main_text: Box<InlineObjectNode>,
+    pub(crate) decorators: Vec<DecoratorNode>,
+    pub(crate) tokens: Vec<Token>,
 }
 
 impl Spanned for DecoratorChainNode {

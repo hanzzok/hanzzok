@@ -1,7 +1,7 @@
 use std::{env, fs, io::Write};
 
 use libhanzzok::{
-    codegen::compile_html_with_hint,
+    codegen::compile_html_nodes,
     core::{
         ast::Raw, code_plugin, emphasize_plugin, heading_plugin, icon_plugin, input_guide_plugin,
         link_plugin, list_plugin, math_plugin, quotation_plugin, youtube_plugin, Compiler,
@@ -186,17 +186,10 @@ fn main() -> eyre::Result<()> {
     <table>
 "#
     )?;
-    let (context, compiled_nodes) = compile_html_with_hint(&nodes, &compiler);
+    let (context, compiled_nodes) = compile_html_nodes(&nodes, &compiler);
 
     for (node, html_nodes) in compiled_nodes {
-        let source = escape(
-            &node
-                .raw()
-                .iter()
-                .map(|t| t.text.clone())
-                .collect::<String>(),
-        )
-        .to_string();
+        let source = escape(&node.raw().iter().map(|t| t.text()).collect::<String>()).to_string();
         if source.trim().is_empty() {
             continue;
         }

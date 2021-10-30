@@ -7,9 +7,10 @@ use crate::{
 
 use super::Raw;
 
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen::prelude::wasm_bindgen)]
 #[derive(Clone, Debug)]
 pub struct TextNode {
-    pub tokens: Vec<(Token, bool)>,
+    pub(crate) tokens: Vec<(Token, bool)>,
 }
 
 impl TextNode {

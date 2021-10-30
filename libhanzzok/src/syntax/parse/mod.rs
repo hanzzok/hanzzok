@@ -53,3 +53,20 @@ pub fn parse_root(tokens: Vec<Token>, compiler: &Compiler) -> Vec<HanzzokAstNode
     .flatten()
     .collect()
 }
+
+#[cfg(target_arch = "wasm32")]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen::prelude::wasm_bindgen)]
+pub struct HanzzokParsed {
+    pub(crate) nodes: Vec<crate::core::ast::HanzzokAstNodeWrapper>,
+}
+
+#[cfg(target_arch = "wasm32")]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen::prelude::wasm_bindgen)]
+pub fn w_parse_root(tokens: super::HanzzokTokenized, compiler: &Compiler) -> HanzzokParsed {
+    HanzzokParsed {
+        nodes: parse_root(tokens.tokens, compiler)
+            .into_iter()
+            .map(|node| crate::core::ast::HanzzokAstNodeWrapper { handle: node })
+            .collect(),
+    }
+}

@@ -1,6 +1,6 @@
 use core::fmt;
 
-#[derive(Clone, Debug, Eq, Ord)]
+#[derive(Clone, Debug, Eq, Ord, serde::Serialize, serde::Deserialize)]
 pub struct LineColumn {
     pub line: usize,
     pub column: usize,
