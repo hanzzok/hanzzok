@@ -10,6 +10,7 @@ mod link;
 mod link_ref;
 mod link_ref_meta;
 
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen::prelude::wasm_bindgen)]
 pub fn link_plugin() -> Plugin {
     Plugin::new()
         .with_decorator(LinkDecoratorRule)

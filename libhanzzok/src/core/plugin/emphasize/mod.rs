@@ -4,6 +4,7 @@ use super::Plugin;
 
 mod emphasize;
 
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen::prelude::wasm_bindgen)]
 pub fn emphasize_plugin() -> Plugin {
     Plugin::new()
         .with_decorator(EmphasizeDecoratorRule {

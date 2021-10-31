@@ -6,6 +6,7 @@ mod heading_meta;
 mod hx;
 mod toc;
 
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen::prelude::wasm_bindgen)]
 pub fn heading_plugin() -> Plugin {
     Plugin::new()
         .with_block_constructor(HxBlockConstructorRule { depth: 1 })

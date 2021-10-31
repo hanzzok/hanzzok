@@ -85,7 +85,7 @@ pub fn w_compile_html_nodes(
     compiler: &Compiler,
 ) -> Result<HanzzokCompiled, wasm_bindgen::JsValue> {
     let nodes: Vec<_> = nodes.nodes.iter().map(|node| node.handle.clone()).collect();
-    let (context, nodes) = compile_html_with_hint(&nodes, compiler);
+    let (context, nodes) = compile_html_nodes(&nodes, compiler);
     Ok(HanzzokCompiled {
         htmls: nodes
             .into_iter()

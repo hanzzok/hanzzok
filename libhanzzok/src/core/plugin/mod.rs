@@ -24,12 +24,14 @@ mod math;
 mod quotation;
 mod youtube;
 
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen::prelude::wasm_bindgen)]
 pub struct Plugin {
     pub(crate) block_constructors: Vec<Rc<dyn BlockConstructorRule>>,
     pub(crate) decorators: Vec<Rc<dyn DecoratorRule>>,
     pub(crate) inline_constructors: Vec<Rc<dyn InlineConstructorRule>>,
 }
 
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen::prelude::wasm_bindgen)]
 impl Plugin {
     pub fn new() -> Self {
         Plugin {
@@ -38,6 +40,9 @@ impl Plugin {
             inline_constructors: Vec::new(),
         }
     }
+}
+
+impl Plugin {
     pub fn with_block_constructor(mut self, rule: impl BlockConstructorRule + 'static) -> Self {
         self.block_constructors.push(Rc::new(rule));
         self
@@ -51,3 +56,7 @@ impl Plugin {
         self
     }
 }
+
+#[cfg(target_arch = "wasm32")]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen::prelude::wasm_bindgen)]
+impl Plugin {}

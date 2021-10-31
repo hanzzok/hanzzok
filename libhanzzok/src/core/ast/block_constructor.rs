@@ -4,6 +4,7 @@ use crate::syntax::Token;
 
 use super::InlineObjectNode;
 
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen::prelude::wasm_bindgen)]
 #[derive(Clone, Debug, Eq, Hash, PartialEq)]
 pub enum BlockConstructorForm {
     Basic,

@@ -11,6 +11,7 @@ pub struct Compiler {
     pub(crate) inline_constructor_rules: HashMap<String, Rc<dyn InlineConstructorRule>>,
 }
 
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen::prelude::wasm_bindgen)]
 impl Compiler {
     pub fn new() -> Self {
         Compiler {
