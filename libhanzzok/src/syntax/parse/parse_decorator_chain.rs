@@ -1,8 +1,8 @@
 use nom::{
     branch::alt,
-    combinator::{map, not, opt},
+    combinator::{map, not, opt, recognize},
     multi::{many0, many1},
-    sequence::{preceded, terminated},
+    sequence::{preceded, terminated, tuple},
 };
 
 use crate::{
@@ -11,7 +11,7 @@ use crate::{
 };
 
 use super::{
-    nom_ext::{satisfy_transform, skip_any_spaces, tag, HanzzokParser},
+    nom_ext::{satisfy, satisfy_transform, skip_any_spaces, tag, HanzzokParser},
     parse_hzdata::parse_hzdata_paired,
     parse_inline_constructor::parse_inline_constructor,
     parse_text::{parse_escaped_text, parse_fallback_text},
@@ -43,47 +43,21 @@ pub fn parse_decorator_chain(p: HanzzokParser) -> ParseResult<DecoratorChainNode
                 parse_escaped_text,
                 preceded(
                     not(alt((
-                        tag(TokenKind::PunctuationFullStop),
-                        tag(TokenKind::PunctuationRightSquareBracket),
+                        recognize(tuple((
+                            tag(TokenKind::PunctuationFullStop),
+                            satisfy(|t| matches!(t.kind, TokenKind::Word(_))),
+                        ))),
+                        recognize(tag(TokenKind::PunctuationRightSquareBracket)),
                     ))),
                     parse_fallback_text,
                 ),
             ))),
             |nodes| {
                 InlineObjectNode::Text(TextNode {
-                    tokens: {
-                        let mut tokens: Vec<_> = nodes
-                            .into_iter()
-                            .flat_map(|node| node.tokens.into_iter())
-                            .collect();
-
-                        while let Some((
-                            (
-                                Token {
-                                    kind: TokenKind::HorizontalSpace,
-                                    ..
-                                },
-                                _,
-                            ),
-                            elements,
-                        )) = tokens.split_last_mut()
-                        {
-                            if let Some((
-                                Token {
-                                    kind: TokenKind::PunctuationReverseSolidus,
-                                    ..
-                                },
-                                _,
-                            )) = elements.last()
-                            {
-                                break;
-                            }
-
-                            tokens = elements.to_vec();
-                        }
-
-                        tokens
-                    },
+                    tokens: nodes
+                        .into_iter()
+                        .flat_map(|node| node.tokens.into_iter())
+                        .collect(),
                 })
             },
         ),

@@ -1,2 +1,7 @@
 [workspace]
 members = ["hanzzok", "libhanzzok", "serde_hzdata"]
+
+[profile.release]
+lto = true
+codegen-units = 1
+panic = "abort"
