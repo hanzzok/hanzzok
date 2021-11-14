@@ -49,9 +49,15 @@ impl fmt::Display for DecoratorChainNode {
 
 #[derive(Clone, Debug)]
 pub struct DecoratorNode {
-    pub span: Span,
+    pub tokens: Vec<Token>,
     pub name: String,
     pub params: Option<String>,
+}
+
+impl Raw for DecoratorNode {
+    fn raw(&self) -> Vec<Token> {
+        self.tokens.clone()
+    }
 }
 
 impl fmt::Display for DecoratorNode {

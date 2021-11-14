@@ -2,7 +2,7 @@ use nom::{
     branch::alt,
     combinator::{map, not, opt},
     multi::{many0, many1},
-    sequence::{preceded, terminated, tuple},
+    sequence::{preceded, terminated},
 };
 
 use crate::{
@@ -92,24 +92,26 @@ pub fn parse_decorator_chain(p: HanzzokParser) -> ParseResult<DecoratorChainNode
     let (p, _) = skip_any_spaces(p)?;
 
     let (p, decorators) = many0(terminated(
-        map(
-            tuple((
-                tag(TokenKind::PunctuationFullStop),
-                many1(satisfy_transform(|t| match &t.kind {
-                    TokenKind::Word(w) => Some(w.clone()),
-                    TokenKind::PunctuationHyphenMinus => Some("-".to_owned()),
-                    _ => None,
-                })),
-                opt(parse_decorator_params),
-            )),
-            |(dot, name, params)| DecoratorNode {
-                span: dot
-                    .span
-                    .joined_opt(params.as_ref().and_then(|params| params.last())),
-                name: name.into_iter().map(|(_, name)| name).collect(),
-                params: params.map(|params| params.into_iter().map(|t| t.text).collect::<String>()),
-            },
-        ),
+        |p: HanzzokParser| {
+            let tt = p.create_tracker();
+            let (p, _) = tag(TokenKind::PunctuationFullStop)(p)?;
+            let (p, name) = many1(satisfy_transform(|t| match &t.kind {
+                TokenKind::Word(w) => Some(w.clone()),
+                TokenKind::PunctuationHyphenMinus => Some("-".to_owned()),
+                _ => None,
+            }))(p)?;
+            let (p, params) = opt(parse_decorator_params)(p)?;
+            let tokens = tt.end(&p);
+            Ok((
+                p,
+                DecoratorNode {
+                    tokens,
+                    name: name.into_iter().map(|(_, name)| name).collect(),
+                    params: params
+                        .map(|params| params.into_iter().map(|t| t.text).collect::<String>()),
+                },
+            ))
+        },
         skip_any_spaces,
     ))(p)?;
 
